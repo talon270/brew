@@ -72,6 +72,19 @@ describe('routes', () => {
     expect(screen.getByText(/Timemore Chestnut C3$/)).toBeTruthy()
   })
 
+  it('does not suggest stretching to a grinder far beyond the budget', () => {
+    // Default budget is ₹6,000; a ₹34,000 grinder is not a near miss.
+    renderAt('/grinders')
+    expect(screen.queryByText(/Fellow Ode Gen 2/)).toBeNull()
+  })
+
+  it('does still suggest stretching to a grinder just over the budget', () => {
+    // ₹25,000 budget: the ₹31,000 Comandante is a genuine 1.24x stretch.
+    saveProfile(buildProfile({}, ['pourover'], 25000))
+    renderAt('/grinders')
+    expect(screen.getByText('Worth stretching for')).toBeTruthy()
+  })
+
   it('renders the beans page', () => {
     renderAt('/beans')
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Beans')

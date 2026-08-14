@@ -32,7 +32,14 @@ export default function GrindersPage() {
   if (!loaded) return null
 
   const inBudget = ranked.filter((m) => !m.overBudget)
-  const nearMisses = ranked.filter((m) => m.overBudget).slice(0, 2)
+
+  // "Worth stretching for" has to mean an actual stretch. Ranking over-budget
+  // options purely by score suggested a ₹34,000 grinder to someone with a
+  // ₹6,000 budget, so cap the suggestion at 50% over.
+  const STRETCH_LIMIT = 1.5
+  const nearMisses = ranked
+    .filter((m) => m.overBudget && m.item.priceInr <= effectiveBudget * STRETCH_LIMIT)
+    .slice(0, 2)
 
   function toggleMethod(m: BrewMethod) {
     const current = effectiveMethods
