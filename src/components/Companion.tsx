@@ -1,112 +1,133 @@
 import { useEffect, useRef, useState } from 'react'
-import Mascot, { type Look } from './Mascot'
+import Mascot, { MASCOT_ASPECT } from './Mascot'
+import { collectObstacles, targetXAt, type Obstacle } from '../lib/walkway'
 
 /**
- * Bruno as a cursor companion.
+ * Bruno, walking down the page.
  *
- * He orbits the pointer while lagging behind it, so he reads as chasing the
- * cursor rather than being glued to it. Position is `fixed`, so he stays with
- * you as the page scrolls.
+ * He descends at a steady pace and steers around anything he would otherwise
+ * walk through — cards, tiles, buttons, the hero. The routing lives in
+ * lib/walkway.ts; this component owns the animation loop and his pose.
  *
- * Deliberately absent when he would be useless or unwelcome: no fine pointer
- * (touch), or the visitor has asked for reduced motion.
+ * He is positioned in document space, so he scrolls with the content. When he
+ * walks off the bottom of what you are looking at he loops back above it, so
+ * he is always somewhere on the page you are actually reading.
+ *
+ * He is hidden when there is no room to walk — below roughly 900px the content
+ * column fills the width and there are no gutters to stroll down — and whenever
+ * reduced motion is requested. Note the gate is viewport width, not pointer
+ * type: that mattered when he chased the cursor, but a walking mascot has
+ * nothing to do with a mouse.
  */
 
-/** How hard he pulls toward the target each frame. Lower = lazier chase. */
-const EASE = 0.055
-/** Orbit radius in px, and how fast he circles. */
-const ORBIT_R = 44
-const ORBIT_SPEED = 1.7
-/** Vertical squash of the orbit, so it reads as a circle in perspective. */
-const ORBIT_FLATTEN = 0.55
-const SIZE = 62
+const WIDTH = 46
+const HEIGHT = WIDTH * MASCOT_ASPECT
+/** Downward pace, px per second. A stroll, not a commute. */
+const SPEED = 26
+/** How quickly he corrects sideways toward a clear gap. */
+const STEER = 0.05
+const EDGE_MARGIN = 6
+/** Below this the layout has no gutters for him to walk in. */
+const MIN_VIEWPORT = 900
 
-function prefersReducedMotion(): boolean {
+function media(query: string): boolean {
   return (
     typeof window !== 'undefined' &&
     typeof window.matchMedia === 'function' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  )
-}
-
-function hasFinePointer(): boolean {
-  return (
-    typeof window !== 'undefined' &&
-    typeof window.matchMedia === 'function' &&
-    window.matchMedia('(pointer: fine)').matches
+    window.matchMedia(query).matches
   )
 }
 
 export default function Companion() {
   const [enabled, setEnabled] = useState(false)
-  const [look, setLook] = useState<Look>({ x: 0, y: 0 })
-  const [awake, setAwake] = useState(false)
-  // Refs don't re-render, and the fade-in needs one.
   const [visible, setVisible] = useState(false)
+  const [facing, setFacing] = useState<'left' | 'right'>('right')
 
   const holder = useRef<HTMLDivElement | null>(null)
-  const cursor = useRef({ x: 0, y: 0 })
   const pos = useRef({ x: 0, y: 0 })
-  const seen = useRef(false)
-  const idleTimer = useRef<number | undefined>(undefined)
+  const obstacles = useRef<Obstacle[]>([])
+  const facingRef = useRef<'left' | 'right'>('right')
 
   useEffect(() => {
-    setEnabled(hasFinePointer() && !prefersReducedMotion())
+    const check = () =>
+      setEnabled(
+        window.innerWidth >= MIN_VIEWPORT && !media('(prefers-reduced-motion: reduce)'),
+      )
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
   }, [])
 
   useEffect(() => {
     if (!enabled) return
 
-    function onMove(e: MouseEvent) {
-      cursor.current = { x: e.clientX, y: e.clientY }
-      if (!seen.current) {
-        // Start where the cursor is rather than sliding in from the corner.
-        seen.current = true
-        pos.current = { x: e.clientX, y: e.clientY }
-        setVisible(true)
-        setAwake(true)
-      }
-      // He dozes off if the pointer stops moving for a while.
-      window.clearTimeout(idleTimer.current)
-      setAwake(true)
-      idleTimer.current = window.setTimeout(() => setAwake(false), 4000)
+    // Obstacles are re-read on layout changes rather than every frame —
+    // getBoundingClientRect on every card at 60fps would force constant reflow.
+    const refresh = () => {
+      obstacles.current = collectObstacles()
     }
+    refresh()
 
-    window.addEventListener('mousemove', onMove, { passive: true })
+    const observer = new MutationObserver(refresh)
+    observer.observe(document.body, { childList: true, subtree: true })
+    window.addEventListener('resize', refresh)
+
+    const rescan = window.setInterval(refresh, 1500)
+
+    // Start just above the fold, off to one side.
+    pos.current = {
+      x: Math.max(EDGE_MARGIN + WIDTH, window.innerWidth * 0.12),
+      y: window.scrollY + window.innerHeight * 0.25,
+    }
+    setVisible(true)
 
     let frame = 0
-    let lastLookUpdate = 0
+    let last = performance.now()
 
     function tick(now: number) {
-      const t = now / 1000
-      const angle = t * ORBIT_SPEED
+      const dt = Math.min((now - last) / 1000, 0.05)
+      last = now
 
-      // Orbit the cursor rather than sit on it — this is what makes it read
-      // as a chase instead of a laggy cursor replacement.
-      const targetX = cursor.current.x + Math.cos(angle) * ORBIT_R
-      const targetY = cursor.current.y + Math.sin(angle) * ORBIT_R * ORBIT_FLATTEN
+      pos.current.y += SPEED * dt
+
+      // Loop him back above the viewport once he walks off the bottom, so he
+      // stays on the part of the page you are actually looking at.
+      const viewTop = window.scrollY
+      const viewBottom = viewTop + window.innerHeight
+      if (pos.current.y - HEIGHT > viewBottom) pos.current.y = viewTop - HEIGHT
+      if (pos.current.y + HEIGHT < viewTop) pos.current.y = viewTop - HEIGHT
+
+      const minX = EDGE_MARGIN + WIDTH / 2
+      const maxX = document.documentElement.clientWidth - EDGE_MARGIN - WIDTH / 2
+
+      const target = targetXAt(
+        obstacles.current,
+        pos.current.y + HEIGHT / 2,
+        pos.current.x,
+        WIDTH / 2,
+        minX,
+        maxX,
+      )
 
       const prevX = pos.current.x
-      pos.current.x += (targetX - pos.current.x) * EASE
-      pos.current.y += (targetY - pos.current.y) * EASE
+      if (target !== null) {
+        pos.current.x += (target - pos.current.x) * STEER
+      }
+      pos.current.x = Math.max(minX, Math.min(maxX, pos.current.x))
 
-      // Lean into the direction of travel.
-      const vx = pos.current.x - prevX
-      const tilt = Math.max(-15, Math.min(15, vx * 2.2))
-
-      if (holder.current && seen.current) {
-        holder.current.style.transform =
-          `translate3d(${pos.current.x - SIZE / 2}px, ${pos.current.y - SIZE / 2}px, 0) rotate(${tilt}deg)`
+      // Only touch state when the direction actually flips — this runs 60
+      // times a second and setFacing on every frame would be needless work.
+      const dx = pos.current.x - prevX
+      if (Math.abs(dx) > 0.08) {
+        const next = dx > 0 ? 'right' : 'left'
+        if (next !== facingRef.current) {
+          facingRef.current = next
+          setFacing(next)
+        }
       }
 
-      // Eye direction changes far more slowly than position, and updating
-      // React state every frame would be wasteful.
-      if (now - lastLookUpdate > 90) {
-        lastLookUpdate = now
-        const dx = cursor.current.x - pos.current.x
-        const dy = cursor.current.y - pos.current.y
-        const dist = Math.hypot(dx, dy) || 1
-        setLook({ x: dx / dist, y: dy / dist })
+      if (holder.current) {
+        holder.current.style.transform = `translate3d(${pos.current.x - WIDTH / 2}px, ${pos.current.y}px, 0)`
       }
 
       frame = requestAnimationFrame(tick)
@@ -115,21 +136,24 @@ export default function Companion() {
     frame = requestAnimationFrame(tick)
 
     return () => {
-      window.removeEventListener('mousemove', onMove)
+      observer.disconnect()
+      window.removeEventListener('resize', refresh)
+      window.clearInterval(rescan)
       cancelAnimationFrame(frame)
-      window.clearTimeout(idleTimer.current)
     }
   }, [enabled])
 
   if (!enabled) return null
 
   return (
-    <div
-      ref={holder}
-      className={`companion${visible ? ' visible' : ''}`}
-      aria-hidden="true"
-    >
-      <Mascot mood={awake ? 'happy' : 'sleepy'} size={SIZE} steam={false} look={look} />
+    <div ref={holder} className={`companion${visible ? ' visible' : ''}`} aria-hidden="true">
+      <Mascot
+        mood="happy"
+        size={WIDTH}
+        steam={false}
+        walk
+        facing={facing}
+      />
     </div>
   )
 }

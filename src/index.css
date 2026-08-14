@@ -29,6 +29,10 @@
   --mascot-spark: #e0a24e;
   --mascot-mug-light: #fffaf3;
   --mascot-shade: #c9b096;
+  --mascot-sleeve: #b45f2c;
+  --mascot-sleeve-light: #d07d43;
+  --mascot-limb: #6b4a33;
+  --mascot-line: #4a2c18;
   --cup-empty: #e3ddd2;
 
   --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua',
@@ -65,6 +69,10 @@
     --mascot-spark: #e8b366;
     --mascot-mug-light: #fbf1e4;
     --mascot-shade: #b9a189;
+    --mascot-sleeve: #b8622e;
+    --mascot-sleeve-light: #d9854a;
+    --mascot-limb: #5d4029;
+    --mascot-line: #2e1b0f;
     --cup-empty: #2b2b33;
   }
 }
@@ -94,6 +102,10 @@
   --mascot-spark: #e8b366;
   --mascot-mug-light: #fbf1e4;
   --mascot-shade: #b9a189;
+  --mascot-sleeve: #b8622e;
+  --mascot-sleeve-light: #d9854a;
+  --mascot-limb: #5d4029;
+  --mascot-line: #2e1b0f;
   --cup-empty: #2b2b33;
 }
 
@@ -1278,5 +1290,53 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   .companion {
     display: none;
+  }
+}
+
+/* ==================================================== walk cycle ======= */
+
+.mascot.is-walking .leg {
+  animation: bruno-step 0.62s ease-in-out infinite;
+}
+
+.mascot.is-walking .leg-r {
+  animation-delay: -0.31s;
+}
+
+.mascot.is-walking .mascot-arm {
+  animation: bruno-swing 0.62s ease-in-out infinite;
+  animation-delay: -0.31s;
+}
+
+/* The body bobs at twice the stride rate — once per footfall. */
+.mascot.is-walking .mascot-body {
+  animation: bruno-bob 0.31s ease-in-out infinite;
+}
+
+@keyframes bruno-step {
+  0%, 100% { transform: rotate(20deg); }
+  50% { transform: rotate(-20deg); }
+}
+
+@keyframes bruno-swing {
+  0%, 100% { transform: rotate(-16deg); }
+  50% { transform: rotate(16deg); }
+}
+
+@keyframes bruno-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+/* A walking Bruno sits in the page flow, not over the cursor. */
+.companion {
+  position: absolute;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot.is-walking .leg,
+  .mascot.is-walking .mascot-arm,
+  .mascot.is-walking .mascot-body {
+    animation: none;
   }
 }
