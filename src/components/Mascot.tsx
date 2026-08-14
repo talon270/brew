@@ -1,9 +1,14 @@
 /**
  * Bruno — the app mascot.
  *
- * A mug with opinions. Drawn as inline SVG rather than an image so it scales
- * cleanly, inherits the theme palette, and can change expression per page.
- * Moods are cheap: only the eyes, mouth and props change.
+ * Proportions follow the baby-schema rules that make a shape read as cute
+ * rather than as an object: a squat, wide body; eyes that are enormous
+ * relative to the face, set low and far apart; a tiny mouth; soft round
+ * corners everywhere; and very little detail. The earlier version was a tall
+ * narrow mug with small high-set eyes, which read as a mug wearing a face.
+ *
+ * Inline SVG so he inherits the theme palette, scales without assets, and can
+ * change expression per page.
  */
 
 export type Mood =
@@ -17,131 +22,157 @@ export type Mood =
 interface MascotProps {
   mood?: Mood
   size?: number
-  /** Steam animates by default; turn it off for dense layouts. */
   steam?: boolean
   className?: string
 }
 
 export default function Mascot({
   mood = 'happy',
-  size = 120,
+  size = 140,
   steam = true,
   className,
 }: MascotProps) {
+  const uid = `m-${mood}`
+  const closedEyes = mood === 'sleepy' || mood === 'grinding'
+
   return (
     <svg
       className={`mascot mascot-${mood}${className ? ` ${className}` : ''}`}
       width={size}
       height={size}
-      viewBox="0 0 120 120"
+      viewBox="0 0 140 140"
       fill="none"
       role="img"
       aria-label="Bruno, a coffee mug"
     >
+      <defs>
+        <linearGradient id={`${uid}-body`} x1="0.2" y1="0" x2="0.9" y2="1">
+          <stop offset="0" stopColor="var(--mascot-mug-light)" />
+          <stop offset="1" stopColor="var(--mascot-mug)" />
+        </linearGradient>
+        <radialGradient id={`${uid}-cheek`}>
+          <stop offset="0" stopColor="var(--mascot-blush)" stopOpacity="0.75" />
+          <stop offset="1" stopColor="var(--mascot-blush)" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
       {steam && (
-        <g className="mascot-steam" stroke="var(--mascot-steam)" strokeWidth="3.5" strokeLinecap="round" fill="none">
-          <path d="M47 30c-5-6 5-11 0-17" />
-          <path d="M60 26c-5-6 5-12 0-18" />
-          <path d="M73 30c-5-6 5-11 0-17" />
+        <g
+          className="mascot-steam"
+          stroke="var(--mascot-steam)"
+          strokeWidth="4"
+          strokeLinecap="round"
+          fill="none"
+        >
+          <path d="M56 32c-6-7 6-13 0-20" />
+          <path d="M70 27c-6-7 6-14 0-21" />
+          <path d="M84 32c-6-7 6-13 0-20" />
         </g>
       )}
 
       <g className="mascot-body">
-        {/* handle */}
+        {/* handle — chunky and rounded, tucked behind the body */}
         <path
-          d="M89 58c15 0 17 26 0 27"
+          d="M108 64c20 0 20 30 0 30"
           stroke="var(--mascot-mug)"
-          strokeWidth="9"
+          strokeWidth="12"
           strokeLinecap="round"
           fill="none"
         />
 
-        {/* mug body */}
+        {/* squat, wide body */}
         <path
-          d="M30 46h60l-4 50c-.6 7-4 10-11 10H45c-7 0-10.4-3-11-10z"
-          fill="var(--mascot-mug)"
+          d="M30 48h80v34q0 26 -26 26H56q-26 0 -26 -26z"
+          fill={`url(#${uid}-body)`}
         />
 
-        {/* rim + coffee surface */}
-        <ellipse cx="60" cy="46" rx="30" ry="8.5" fill="var(--mascot-rim)" />
-        <ellipse cx="60" cy="46.5" rx="24" ry="6" fill="var(--mascot-coffee)" />
-        {/* crema highlight */}
-        <ellipse cx="52" cy="45" rx="7" ry="2" fill="var(--mascot-crema)" opacity="0.5" />
+        {/* soft shadow inside the lower right, for a little dimension */}
+        <path
+          d="M96 48h14v34q0 26 -26 26h-8q22 -4 22 -28z"
+          fill="var(--mascot-shade)"
+          opacity="0.35"
+        />
 
-        {/* face */}
-        <Face mood={mood} />
+        {/* rim and coffee */}
+        <ellipse cx="70" cy="48" rx="40" ry="10.5" fill="var(--mascot-rim)" />
+        <ellipse cx="70" cy="48.5" rx="32" ry="7.5" fill="var(--mascot-coffee)" />
+        <ellipse cx="58" cy="46.5" rx="9" ry="2.4" fill="var(--mascot-crema)" opacity="0.55" />
 
-        {/* saucer */}
-        <rect x="24" y="108" width="72" height="7" rx="3.5" fill="var(--mascot-rim)" />
+        {/* ---- face ---- */}
+
+        {/* blush sits under and slightly outside the eyes, overlapping them */}
+        <ellipse cx="40" cy="89" rx="11" ry="7" fill={`url(#${uid}-cheek)`} />
+        <ellipse cx="100" cy="89" rx="11" ry="7" fill={`url(#${uid}-cheek)`} />
+
+        {closedEyes ? (
+          <g
+            stroke="var(--mascot-face)"
+            strokeWidth="4"
+            strokeLinecap="round"
+            fill="none"
+          >
+            <path d="M45 78q8 -8 16 0" />
+            <path d="M79 78q8 -8 16 0" />
+          </g>
+        ) : (
+          <g className="mascot-eyes">
+            <ellipse
+              cx="53"
+              cy={mood === 'reading' ? 80 : 78}
+              rx="9.5"
+              ry={mood === 'delighted' ? 10.5 : 10}
+              fill="var(--mascot-face)"
+            />
+            <ellipse
+              cx="87"
+              cy={mood === 'reading' ? 80 : 78}
+              rx="9.5"
+              ry={mood === 'delighted' ? 10.5 : 10}
+              fill="var(--mascot-face)"
+            />
+            {/* two catchlights per eye — the single biggest cuteness lever */}
+            <circle cx="49.5" cy={mood === 'reading' ? 76 : 74} r="3.4" fill="#fff" />
+            <circle cx="83.5" cy={mood === 'reading' ? 76 : 74} r="3.4" fill="#fff" />
+            <circle cx="56.5" cy={mood === 'reading' ? 83.5 : 81.5} r="1.7" fill="#fff" opacity="0.8" />
+            <circle cx="90.5" cy={mood === 'reading' ? 83.5 : 81.5} r="1.7" fill="#fff" opacity="0.8" />
+          </g>
+        )}
+
+        {/* One raised brow, over the left eye only. Kept clear of the rim,
+            which it used to overlap and read as a crack in the mug. */}
+        {mood === 'thinking' && (
+          <path
+            d="M46 65.5q7 -4 14 -1"
+            stroke="var(--mascot-face)"
+            strokeWidth="3"
+            strokeLinecap="round"
+            fill="none"
+          />
+        )}
+
+        <Mouth mood={mood} />
       </g>
 
       {mood === 'delighted' && (
         <g fill="var(--mascot-spark)" className="mascot-sparks">
-          <path d="M22 52l2.2 5.3L29.5 60l-5.3 2.2L22 67.5l-2.2-5.3L14.5 60l5.3-2.2z" />
-          <path d="M100 68l1.7 4 4 1.7-4 1.7-1.7 4-1.7-4-4-1.7 4-1.7z" />
+          <path d="M22 56l2.6 6.2L30.8 65l-6.2 2.6L22 73.8l-2.6-6.2L13.2 65l6.2-2.6z" />
+          <path d="M120 44l1.9 4.5 4.5 1.9-4.5 1.9-1.9 4.5-1.9-4.5-4.5-1.9 4.5-1.9z" />
         </g>
       )}
 
       {mood === 'sleepy' && (
-        <g fill="var(--mascot-steam)" className="mascot-zzz" fontSize="13" fontWeight="700">
-          <text x="92" y="34">z</text>
-          <text x="101" y="24">z</text>
+        <g
+          fill="var(--mascot-steam)"
+          className="mascot-zzz"
+          fontSize="15"
+          fontWeight="700"
+          fontFamily="inherit"
+        >
+          <text x="108" y="34">z</text>
+          <text x="119" y="22">z</text>
         </g>
       )}
     </svg>
-  )
-}
-
-function Face({ mood }: { mood: Mood }) {
-  const eyeFill = 'var(--mascot-face)'
-
-  // Sleepy and grinding both squint; everything else keeps open eyes.
-  const closedEyes = mood === 'sleepy' || mood === 'grinding'
-
-  return (
-    <g className="mascot-face">
-      {/* blush */}
-      <ellipse cx="41" cy="80" rx="6" ry="3.6" fill="var(--mascot-blush)" opacity="0.55" />
-      <ellipse cx="79" cy="80" rx="6" ry="3.6" fill="var(--mascot-blush)" opacity="0.55" />
-
-      {closedEyes ? (
-        <g stroke={eyeFill} strokeWidth="3" strokeLinecap="round" fill="none">
-          <path d="M44 71c2.5-3 6.5-3 9 0" />
-          <path d="M67 71c2.5-3 6.5-3 9 0" />
-        </g>
-      ) : (
-        <g fill={eyeFill}>
-          <ellipse
-            cx="48.5"
-            cy={mood === 'reading' ? 73 : 71}
-            rx="4.2"
-            ry={mood === 'delighted' ? 5 : 4.6}
-          />
-          <ellipse
-            cx="71.5"
-            cy={mood === 'reading' ? 73 : 71}
-            rx="4.2"
-            ry={mood === 'delighted' ? 5 : 4.6}
-          />
-          {/* catchlights */}
-          <circle cx="50" cy={mood === 'reading' ? 71.5 : 69.5} r="1.5" fill="var(--mascot-mug)" />
-          <circle cx="73" cy={mood === 'reading' ? 71.5 : 69.5} r="1.5" fill="var(--mascot-mug)" />
-        </g>
-      )}
-
-      {/* a single raised brow reads as "considering it" */}
-      {mood === 'thinking' && (
-        <path
-          d="M44 62c3-2.5 7-2.5 10-.5"
-          stroke={eyeFill}
-          strokeWidth="2.6"
-          strokeLinecap="round"
-          fill="none"
-        />
-      )}
-
-      <Mouth mood={mood} />
-    </g>
   )
 }
 
@@ -149,31 +180,24 @@ function Mouth({ mood }: { mood: Mood }) {
   const stroke = 'var(--mascot-face)'
   const common = {
     stroke,
-    strokeWidth: 3,
+    strokeWidth: 3.4,
     strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
     fill: 'none',
   }
 
   switch (mood) {
     case 'thinking':
-      // small pursed mouth, off to one side
-      return <ellipse cx="63" cy="88" rx="3.4" ry="2.8" fill={stroke} />
+      // Off to one side, which reads as "considering it" rather than as a nose.
+      return <ellipse cx="77" cy="94" rx="4" ry="3.2" fill={stroke} />
     case 'delighted':
-      return (
-        <path
-          d="M50 84c2 8 18 8 20 0z"
-          fill={stroke}
-          stroke={stroke}
-          strokeWidth="2"
-          strokeLinejoin="round"
-        />
-      )
+      // open smile — small, wide, and low
+      return <path d="M62 94q8 9 16 0z" fill={stroke} stroke={stroke} strokeWidth="2.5" strokeLinejoin="round" />
     case 'sleepy':
-      return <path d="M56 88c2 2.5 6 2.5 8 0" {...common} />
+      return <path d="M66 95q4 3 8 0" {...common} />
     case 'grinding':
-      // gritted, doing the work
-      return <path d="M52 86h16" {...common} />
+      return <path d="M63 94h14" {...common} />
     default:
-      return <path d="M51 84c3 6 15 6 18 0" {...common} />
+      return <path d="M63 93q7 6 14 0" {...common} />
   }
 }

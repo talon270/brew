@@ -27,7 +27,12 @@
   --mascot-blush: #e08a63;
   --mascot-steam: #c2ad97;
   --mascot-spark: #e0a24e;
+  --mascot-mug-light: #fffaf3;
+  --mascot-shade: #c9b096;
   --cup-empty: #ece5dc;
+
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua',
+    Georgia, 'Times New Roman', serif;
 
   color-scheme: light dark;
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -58,6 +63,8 @@
     --mascot-blush: #d97f57;
     --mascot-steam: #8a7461;
     --mascot-spark: #e8b366;
+    --mascot-mug-light: #fbf1e4;
+    --mascot-shade: #b9a189;
     --cup-empty: #2b2b33;
   }
 }
@@ -85,6 +92,8 @@
   --mascot-blush: #d97f57;
   --mascot-steam: #8a7461;
   --mascot-spark: #e8b366;
+  --mascot-mug-light: #fbf1e4;
+  --mascot-shade: #b9a189;
   --cup-empty: #2b2b33;
 }
 
@@ -108,13 +117,15 @@ a {
 h1,
 h2,
 h3 {
-  line-height: 1.25;
-  letter-spacing: -0.015em;
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.012em;
 }
 
 h1 {
-  font-size: clamp(1.7rem, 4vw, 2.3rem);
-  margin: 0 0 0.4em;
+  font-size: clamp(1.9rem, 5vw, 2.7rem);
+  margin: 0 0 0.35em;
 }
 
 /* ---------------------------------------------------------------- layout */
@@ -145,8 +156,9 @@ h1 {
 }
 
 .brand {
+  font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   color: var(--text);
   text-decoration: none;
   letter-spacing: -0.02em;
@@ -557,17 +569,27 @@ footer {
   max-width: 46ch;
 }
 
+/* The tail points left, at Bruno, who stands to the left of the bubble.
+   It used to point up at nothing. */
 .speech::before {
   content: '';
   position: absolute;
-  left: 26px;
-  top: -8px;
+  left: -8px;
+  top: 22px;
   width: 14px;
   height: 14px;
   background: var(--surface);
   border-left: 1px solid var(--border);
-  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
   transform: rotate(45deg);
+}
+
+/* Once the mascot wraps above the bubble there is nothing to the left of it,
+   so drop the tail rather than point at empty space. */
+@media (max-width: 460px) {
+  .speech::before {
+    display: none;
+  }
 }
 
 .with-mascot {
@@ -650,7 +672,7 @@ a.card:hover {
 }
 
 .section-head h2 {
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   margin: 0;
 }
 
@@ -898,4 +920,219 @@ input[type='number']:focus,
 select:focus {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
+}
+
+/* Blinking is the cheapest way to make a face feel alive. */
+.mascot-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mascot-blink 5.4s infinite;
+}
+
+@keyframes mascot-blink {
+  0%, 93%, 100% { transform: scaleY(1); }
+  95.5% { transform: scaleY(0.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot-eyes { animation: none; }
+}
+
+/* =================================================== texture and depth ==
+   A flat brown page reads as a spreadsheet. Coffee is tactile, so the page
+   gets a paper grain and the cards get real elevation. */
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.09'/%3E%3C/svg%3E");
+}
+
+.card {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 6px 20px -14px rgb(0 0 0 / 0.35);
+}
+
+/* ============================================================== hero ==== */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 2.2rem 1.6rem;
+  gap: 1.8rem;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 14px 40px -26px rgb(0 0 0 / 0.5);
+}
+
+/* A warm glow behind the mascot, so the hero has a light source. */
+.hero::before {
+  content: '';
+  position: absolute;
+  right: -6%;
+  top: -30%;
+  width: min(340px, 55%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 68%);
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.hero > * {
+  position: relative;
+}
+
+.hero .lede {
+  font-size: 1.12rem;
+}
+
+/* ======================================================== rhythm ======== */
+
+.stack > section {
+  margin-top: 2.4rem;
+}
+
+.section-head {
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+/* A short accent stub anchors each section instead of a bare grey line. */
+.section-head::before {
+  content: '';
+  width: 5px;
+  height: 1.15em;
+  border-radius: 3px;
+  background: var(--accent);
+  flex: 0 0 auto;
+}
+
+/* ==================================================== chapter cards ===== */
+
+.chapter {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.95rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.chapter-icon {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 1.25rem;
+  background: var(--accent-soft);
+  border: 1px solid var(--border);
+}
+
+.chapter-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.chapter-body strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.06rem;
+  margin-bottom: 0.15rem;
+}
+
+.chapter-body p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.chapter-meta {
+  flex: 0 0 auto;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  padding-top: 0.3rem;
+}
+
+/* ========================================================= tiles ======== */
+
+.tile {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 6px 20px -14px rgb(0 0 0 / 0.35);
+}
+
+.tile-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 1.35rem;
+  background: var(--accent-soft);
+  border: 1px solid var(--border);
+  margin-bottom: 0.7rem;
+}
+
+.tile strong {
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+}
+
+/* ======================================================== buttons ======= */
+
+.btn {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12), 0 6px 16px -10px var(--accent);
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn.secondary {
+  box-shadow: none;
+}
+
+.chip {
+  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+}
+
+.chip:active {
+  transform: translateY(1px);
+}
+
+/* ======================================================== entrance ====== */
+
+.stack > * {
+  animation: rise 0.42s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+}
+
+.stack > *:nth-child(1) { animation-delay: 0.02s; }
+.stack > *:nth-child(2) { animation-delay: 0.07s; }
+.stack > *:nth-child(3) { animation-delay: 0.12s; }
+.stack > *:nth-child(4) { animation-delay: 0.17s; }
+.stack > *:nth-child(n + 5) { animation-delay: 0.2s; }
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stack > * {
+    animation: none;
+  }
 }

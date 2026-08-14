@@ -23,6 +23,50 @@ export interface GuideSection {
   order: number
   markdown: string
   html: string
+  /** First sentence, for chapter cards that would otherwise be a bare title. */
+  excerpt: string
+  readingMinutes: number
+  /** Decorative, per chapter. */
+  icon: string
+}
+
+const ICONS: Record<string, string> = {
+  'what-is-specialty-coffee': '🌱',
+  'grinder-first': '⚙️',
+  'buying-and-storing': '🛍️',
+  'the-variables': '⚖️',
+  'brew-methods': '🫖',
+  troubleshooting: '🔧',
+}
+
+/** ~200 words per minute, rounded up, floored at 1. */
+function readingMinutes(markdown: string): number {
+  const words = markdown.trim().split(/\s+/).length
+  return Math.max(1, Math.round(words / 200))
+}
+
+function firstSentence(markdown: string): string {
+  const paragraph = markdown
+    .split('\n')
+    .map((l) => l.trim())
+    .find((l) => l.length > 0 && !l.startsWith('#') && !l.startsWith('>') && !l.startsWith('|'))
+
+  if (!paragraph) return ''
+
+  // Strip the markdown that would otherwise show as literal asterisks.
+  const plain = paragraph
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/\[(.+?)\]\(.*?\)/g, '$1')
+    .replace(/`(.+?)`/g, '$1')
+
+  const match = plain.match(/^.*?[.!?](\s|$)/)
+  const sentence = (match ? match[0] : plain).trim()
+  if (sentence.length <= 150) return sentence
+
+  // Cut on a word boundary — slicing mid-word looks like a rendering bug.
+  const cut = sentence.slice(0, 150)
+  return `${cut.slice(0, cut.lastIndexOf(' ')).trimEnd()}…`
 }
 
 function slugify(text: string): string {
@@ -44,12 +88,17 @@ function parse(path: string, raw: string): GuideSection {
   // Drop the H1 from the body — the page renders the title itself.
   const body = titleLine ? raw.replace(titleLine, '').trim() : raw
 
+  const slug = nameSlug || slugify(title)
+
   return {
-    slug: nameSlug || slugify(title),
+    slug,
     title,
     order,
     markdown: body,
     html: marked.parse(body, { async: false }) as string,
+    excerpt: firstSentence(body),
+    readingMinutes: readingMinutes(body),
+    icon: ICONS[slug] ?? '☕',
   }
 }
 

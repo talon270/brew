@@ -106,17 +106,16 @@ export default function Home() {
           <span className="meta">{GUIDE_SECTIONS.length} chapters</span>
         </div>
         <div className="grid">
-          {GUIDE_SECTIONS.map((s, i) => (
-            <Link
-              key={s.slug}
-              to={`/guide/${s.slug}`}
-              className="card"
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-              <div className="row-between">
+          {GUIDE_SECTIONS.map((s) => (
+            <Link key={s.slug} to={`/guide/${s.slug}`} className="card chapter">
+              <span className="chapter-icon" aria-hidden="true">
+                {s.icon}
+              </span>
+              <span className="chapter-body">
                 <strong>{s.title}</strong>
-                <span className="meta">{i + 1}</span>
-              </div>
+                <p>{s.excerpt}</p>
+              </span>
+              <span className="chapter-meta">{s.readingMinutes} min</span>
             </Link>
           ))}
         </div>
