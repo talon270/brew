@@ -38,6 +38,7 @@ const ICONS: Record<string, IconName> = {
   'the-variables': 'scale',
   'brew-methods': 'kettle',
   troubleshooting: 'wrench',
+  'indian-conditions': 'droplet',
 }
 
 /** ~200 words per minute, rounded up, floored at 1. */

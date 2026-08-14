@@ -94,16 +94,63 @@ export default function Home() {
               {GRINDERS.length} grinders ranked by budget and how you actually brew.
             </span>
           </Link>
-          <Link to="/beans" className="tile">
+          <Link to="/fix" className="tile">
+            <span className="tile-icon">
+              <Icon name="wrench" />
+            </span>
+            <strong>Fix a brew</strong>
+            <span className="meta">
+              Tell it what went wrong, get one specific change — not a list.
+            </span>
+          </Link>
+          <Link to="/shelf" className="tile">
+            <span className="tile-icon">
+              <Icon name="bag" />
+            </span>
+            <strong>Your shelf</strong>
+            <span className="meta">
+              Track roast dates, and find out whether your beans are ready or fading.
+            </span>
+          </Link>
+          <Link to="/water" className="tile">
+            <span className="tile-icon">
+              <Icon name="droplet" />
+            </span>
+            <strong>Water</strong>
+            <span className="meta">
+              98% of your cup, and the reason Delhi coffee tastes flat.
+            </span>
+          </Link>
+          <Link to="/buy" className="tile">
             <span className="tile-icon">
               <Icon name="bean" />
             </span>
-            <strong>Beans</strong>
+            <strong>What to buy</strong>
             <span className="meta">
-              {BEANS.length} bags from Delhi NCR roasters, matched to your taste.
+              {GRINDERS.length} grinders and {BEANS.length} bags, ranked honestly.
             </span>
           </Link>
         </div>
+      </section>
+
+      <section>
+        <div className="section-head">
+          <h2>New here?</h2>
+          <div className="rule" />
+        </div>
+        <Link to="/path" className="card chapter">
+          <span className="chapter-icon">
+            <Icon name="seedling" size={22} />
+          </span>
+          <span className="chapter-body">
+            <strong>Two weeks to decent coffee</strong>
+            <p>
+              The whole site in order — one idea a day, one thing to brew, one variable
+              changed at a time. Start at day one and stop worrying about what to read next.
+            </p>
+          </span>
+          <span className="chapter-meta">14 steps</span>
+        </Link>
       </section>
 
       <blockquote className="pullquote">

@@ -82,13 +82,21 @@ so the source threads get credited.
 
 | Route | What it does |
 |---|---|
-| `/quiz` → `/you` | Taste profile, and the recommendations it drives |
+| `/path` | Two weeks to decent coffee — the whole site in order |
+| `/guide` | Learning hub: chapters, plus every deep dive and tool |
 | `/explore` | Coffee 101 — interactive diagrams, no prior knowledge assumed |
+| `/glossary` | Every term, defined without jargon |
 | `/brew` | Brew timer and ratio calculator for six methods |
+| `/fix` | Troubleshooter: symptom to one specific change |
+| `/water` | Remineralisation calculator for RO and Delhi tap water |
+| `/espresso` | Dial-in targets and a shot judge |
+| `/tasting` | Palate training exercises |
 | `/log` | Brew tracker: what you did, how it tasted, what to change |
-| `/grinders` | Grinder finder, ranked by budget and brew method |
-| `/beans` | Bean catalogue, reordered by taste profile |
-| `/guide` | The written beginner's guide |
+| `/shelf` | Roast dates and freshness for the bags you own |
+| `/buy` | Grinders, gear, beans and roasters |
+| `/quiz` → `/you` | Taste profile, and the recommendations it drives |
+
+See [ROADMAP.md](ROADMAP.md) for what is next and what has been ruled out.
 
 ## Roadmap
 

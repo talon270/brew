@@ -35,17 +35,10 @@ interface MascotProps {
   steam?: boolean
   className?: string
   look?: Look
-  /**
-   * Play the walk cycle. The stride is animated in CSS rather than driven by
-   * a phase prop, so it stays smooth without re-rendering every frame.
-   */
-  walk?: boolean
-  /** Flips him to face left. */
-  facing?: 'left' | 'right'
 }
 
 /** Aspect ratio of the viewBox, so callers can size by width alone. */
-export const MASCOT_ASPECT = 182 / 140
+const MASCOT_ASPECT = 182 / 140
 
 export default function Mascot({
   mood = 'happy',
@@ -53,10 +46,8 @@ export default function Mascot({
   steam = true,
   className,
   look,
-  walk = false,
-  facing = 'right',
 }: MascotProps) {
-  const uid = `m-${mood}${walk ? '-w' : ''}`
+  const uid = `m-${mood}`
   const closedEyes = mood === 'sleepy' || mood === 'grinding'
 
   const lookX = look ? clamp(look.x, -1, 1) * 3 : 0
@@ -65,7 +56,7 @@ export default function Mascot({
 
   return (
     <svg
-      className={`mascot mascot-${mood}${walk ? ' is-walking' : ''}${className ? ` ${className}` : ''}`}
+      className={`mascot mascot-${mood}${className ? ` ${className}` : ''}`}
       width={size}
       height={size * MASCOT_ASPECT}
       viewBox="0 0 140 182"
@@ -87,7 +78,7 @@ export default function Mascot({
         </clipPath>
       </defs>
 
-      <g transform={facing === 'left' ? 'translate(140 0) scale(-1 1)' : undefined}>
+      <g>
         {steam && (
           <g
             className="mascot-steam"

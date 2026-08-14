@@ -9,16 +9,26 @@ import GuideSection from './routes/GuideSection'
 import Brew from './routes/Brew'
 import Log from './routes/Log'
 import Explore from './routes/Explore'
-import Companion from './components/Companion'
+import Path from './routes/Path'
+import Fix from './routes/Fix'
+import Water from './routes/Water'
+import Shelf from './routes/Shelf'
+import Tasting from './routes/Tasting'
+import Espresso from './routes/Espresso'
+import Glossary from './routes/Glossary'
+import Gear from './routes/Gear'
+import Roasters from './routes/Roasters'
+import Buy from './routes/Buy'
 import { THEME_ICONS, THEME_LABELS, useTheme } from './lib/theme'
 
 const NAV = [
-  { to: '/explore', label: 'Coffee 101' },
+  { to: '/path', label: 'Start here' },
+  { to: '/guide', label: 'Learn' },
   { to: '/brew', label: 'Timer' },
+  { to: '/fix', label: 'Fix a brew' },
   { to: '/log', label: 'My brews' },
-  { to: '/guide', label: 'Guide' },
-  { to: '/grinders', label: 'Grinders' },
-  { to: '/beans', label: 'Beans' },
+  { to: '/shelf', label: 'My shelf' },
+  { to: '/buy', label: 'Buy' },
   { to: '/you', label: 'Your taste' },
 ]
 
@@ -64,6 +74,16 @@ export default function App() {
           <Route path="/beans" element={<BeansPage />} />
           <Route path="/guide" element={<GuideIndex />} />
           <Route path="/guide/:slug" element={<GuideSection />} />
+          <Route path="/path" element={<Path />} />
+          <Route path="/fix" element={<Fix />} />
+          <Route path="/water" element={<Water />} />
+          <Route path="/shelf" element={<Shelf />} />
+          <Route path="/tasting" element={<Tasting />} />
+          <Route path="/espresso" element={<Espresso />} />
+          <Route path="/glossary" element={<Glossary />} />
+          <Route path="/buy" element={<Buy />} />
+          <Route path="/gear" element={<Gear />} />
+          <Route path="/roasters" element={<Roasters />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </main>
@@ -71,9 +91,6 @@ export default function App() {
       <footer>
         Brew — specialty coffee in Delhi NCR. Prices are approximate and change often.
       </footer>
-
-      {/* Outside <main> so he survives route changes and follows you around. */}
-      <Companion />
     </div>
   )
 }

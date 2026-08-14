@@ -2,10 +2,7 @@ import type { Match } from '../lib/types'
 import type { GrinderMatch } from '../lib/matching'
 import type { Bean } from '../lib/types'
 import { BREW_METHOD_LABELS } from '../lib/types'
-
-function rupees(n: number): string {
-  return `₹${n.toLocaleString('en-IN')}`
-}
+import { rupees } from '../lib/format'
 
 function Reasons({ reasons, caveats }: { reasons: string[]; caveats: string[] }) {
   if (reasons.length === 0 && caveats.length === 0) return null

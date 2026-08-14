@@ -184,3 +184,49 @@ describe('saved profile', () => {
     expect(within(beans).queryByText(/Vienna Roast/)).toBeNull()
   })
 })
+
+/**
+ * Smoke tests for the pages added in the "one stop" build. These catch the
+ * failure mode that matters most for a site of this size: a route that throws
+ * on render and takes the whole app down with it.
+ */
+describe('the learning and buying pages', () => {
+  const PAGES: Array<[string, string]> = [
+    ['/path', 'Two weeks to decent coffee'],
+    ['/fix', "Something's wrong"],
+    ['/water', 'Water'],
+    ['/shelf', 'Your shelf'],
+    ['/tasting', 'Learning to taste'],
+    ['/espresso', 'Espresso'],
+    ['/glossary', 'Glossary'],
+    ['/buy', 'Spending money well'],
+    ['/gear', 'The rest of the kit'],
+    ['/roasters', 'Indian roasters'],
+  ]
+
+  for (const [route, heading] of PAGES) {
+    it(`renders ${route}`, () => {
+      renderAt(route)
+      expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(heading)
+    })
+  }
+
+  it('offers the guide hub as the way into everything else', () => {
+    renderAt('/guide')
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Learn coffee')
+    // The hub has to actually link onward, or the nav restructure stranded pages.
+    for (const label of [/Two weeks to decent coffee/, /Coffee 101/, /Glossary/]) {
+      expect(screen.getByRole('link', { name: label })).toBeTruthy()
+    }
+  })
+
+  it('picks up the Indian conditions chapter', () => {
+    renderAt('/guide/indian-conditions')
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toMatch(/Indian conditions/i)
+  })
+
+  it('shows the brew log empty state on an untouched shelf', () => {
+    renderAt('/shelf')
+    expect(screen.getByText('Nothing on the shelf')).toBeTruthy()
+  })
+})
