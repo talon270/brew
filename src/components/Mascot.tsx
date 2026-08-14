@@ -23,18 +23,11 @@ export type Mood =
   | 'sleepy'
   | 'worried'
 
-/** Normalised look direction, each axis -1..1. */
-export interface Look {
-  x: number
-  y: number
-}
-
 interface MascotProps {
   mood?: Mood
   size?: number
   steam?: boolean
   className?: string
-  look?: Look
 }
 
 /** Aspect ratio of the viewBox, so callers can size by width alone. */
@@ -45,13 +38,9 @@ export default function Mascot({
   size = 140,
   steam = true,
   className,
-  look,
 }: MascotProps) {
   const uid = `m-${mood}`
   const closedEyes = mood === 'sleepy' || mood === 'grinding'
-
-  const lookX = look ? clamp(look.x, -1, 1) * 3 : 0
-  const lookY = look ? clamp(look.y, -1, 1) * 2.2 : 0
 
 
   return (
@@ -151,7 +140,7 @@ export default function Mascot({
             <ellipse cx="70" cy="48.5" rx="32" ry="7.5" fill="var(--mascot-coffee)" />
             <ellipse cx="58" cy="46.5" rx="9" ry="2.4" fill="var(--mascot-crema)" opacity="0.5" />
 
-            <Face mood={mood} closedEyes={closedEyes} lookX={lookX} lookY={lookY} />
+            <Face mood={mood} closedEyes={closedEyes} />
           </g>
         </g>
 
@@ -226,17 +215,7 @@ function Arm() {
   )
 }
 
-function Face({
-  mood,
-  closedEyes,
-  lookX,
-  lookY,
-}: {
-  mood: Mood
-  closedEyes: boolean
-  lookX: number
-  lookY: number
-}) {
+function Face({ mood, closedEyes }: { mood: Mood; closedEyes: boolean }) {
   const eyeY = mood === 'reading' ? 72 : 70
 
   return (
@@ -249,7 +228,7 @@ function Face({
           <path d="M80 70q7 -7 14 0" />
         </g>
       ) : (
-        <g className="mascot-eyes" transform={`translate(${lookX} ${lookY})`}>
+        <g className="mascot-eyes">
           <ellipse cx="53" cy={eyeY} rx="7" ry={mood === 'delighted' ? 8 : 7.5} fill="var(--mascot-face)" />
           <ellipse cx="87" cy={eyeY} rx="7" ry={mood === 'delighted' ? 8 : 7.5} fill="var(--mascot-face)" />
           <circle cx="50.5" cy={eyeY - 2.5} r="2.5" fill="#fff" />
@@ -344,8 +323,4 @@ function Mouth({ mood }: { mood: Mood }) {
     default:
       return <path d="M63 81q7 6 14 0" {...common} />
   }
-}
-
-function clamp(n: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, n))
 }
