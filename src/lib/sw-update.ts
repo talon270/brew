@@ -15,9 +15,15 @@
 export function installUpdateHandler(): void {
   if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return
 
+  // On a first visit the page starts uncontrolled, so clientsClaim fires
+  // controllerchange as the worker takes over for the very first time. That is
+  // a registration, not an update, and reloading for it gave every new visitor
+  // a pointless reload mid-render.
+  const hadController = Boolean(navigator.serviceWorker.controller)
   let reloading = false
 
   navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController) return
     // The guard matters: without it a slow activation can fire twice and put
     // the tab into a reload loop.
     if (reloading) return
