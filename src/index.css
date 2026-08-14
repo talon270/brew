@@ -27,6 +27,7 @@
   --mascot-blush: #e08a63;
   --mascot-steam: #c2ad97;
   --mascot-spark: #e0a24e;
+  --cup-empty: #ece5dc;
 
   color-scheme: light dark;
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -57,6 +58,7 @@
     --mascot-blush: #d97f57;
     --mascot-steam: #8a7461;
     --mascot-spark: #e8b366;
+    --cup-empty: #2b2b33;
   }
 }
 
@@ -83,6 +85,7 @@
   --mascot-blush: #d97f57;
   --mascot-steam: #8a7461;
   --mascot-spark: #e8b366;
+  --cup-empty: #2b2b33;
 }
 
 * {
@@ -755,4 +758,144 @@ select {
 .theme-toggle:hover {
   color: var(--text);
   border-color: var(--accent);
+}
+
+/* ------------------------------------------------------------- visuals */
+
+.explore-section + .explore-section {
+  margin-top: 2.6rem;
+}
+
+.viz {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.grind-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.8rem;
+}
+
+.grind-cell {
+  margin: 0;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem;
+  background: var(--surface);
+  transition: border-color 0.16s ease, transform 0.16s ease;
+}
+
+.grind-cell:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.grind-cell.on {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.grind-cell .viz-patch {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+.grind-cell figcaption {
+  margin-top: 0.45rem;
+}
+
+.grind-cell figcaption strong {
+  display: block;
+  font-size: 0.92rem;
+}
+
+.grind-cell figcaption .meta {
+  font-size: 0.8rem;
+}
+
+.wheel-layout {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.wheel {
+  flex: 0 0 auto;
+  width: min(300px, 100%);
+  height: auto;
+  margin-inline: auto;
+}
+
+.drink-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 0.7rem;
+}
+
+.drink-cell {
+  margin: 0;
+  text-align: center;
+}
+
+.drink-cell svg {
+  width: 100%;
+  height: auto;
+  max-width: 96px;
+}
+
+.drink-cell figcaption strong {
+  display: block;
+  font-size: 0.86rem;
+  margin-top: 0.3rem;
+}
+
+.drink-cell figcaption .meta {
+  font-size: 0.78rem;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.legend i {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  display: inline-block;
+}
+
+/* ------------------------------------------------------------- inputs */
+
+input[type='text'],
+input[type='number'] {
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.6rem;
+}
+
+input[type='text']:focus,
+input[type='number']:focus,
+select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
 }

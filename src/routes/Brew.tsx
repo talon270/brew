@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import Mascot from '../components/Mascot'
 import { RECIPES, formatClock } from '../data/recipes'
 import { BREW_METHODS, BREW_METHOD_LABELS, type BrewMethod } from '../lib/types'
@@ -137,9 +138,17 @@ export default function Brew() {
                 Start brewing
               </button>
             ) : (
-              <button className="btn secondary" onClick={reset}>
-                Reset
-              </button>
+              <>
+                <Link
+                  className="btn"
+                  to={`/log?method=${method}&dose=${dose}&seconds=${elapsed}`}
+                >
+                  Log this brew
+                </Link>
+                <button className="btn secondary" onClick={reset}>
+                  Reset
+                </button>
+              </>
             )}
           </div>
         </div>

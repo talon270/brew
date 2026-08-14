@@ -7,10 +7,14 @@ import BeansPage from './routes/Beans'
 import GuideIndex from './routes/GuideIndex'
 import GuideSection from './routes/GuideSection'
 import Brew from './routes/Brew'
+import Log from './routes/Log'
+import Explore from './routes/Explore'
 import { THEME_ICONS, THEME_LABELS, useTheme } from './lib/theme'
 
 const NAV = [
+  { to: '/explore', label: 'Coffee 101' },
   { to: '/brew', label: 'Timer' },
+  { to: '/log', label: 'My brews' },
   { to: '/guide', label: 'Guide' },
   { to: '/grinders', label: 'Grinders' },
   { to: '/beans', label: 'Beans' },
@@ -52,6 +56,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/brew" element={<Brew />} />
+          <Route path="/log" element={<Log />} />
+          <Route path="/explore" element={<Explore />} />
           <Route path="/you" element={<You />} />
           <Route path="/grinders" element={<GrindersPage />} />
           <Route path="/beans" element={<BeansPage />} />

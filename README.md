@@ -66,15 +66,29 @@ Specs (burr type, size, espresso capability) are stable and reliable.
 Before launch: verify every `priceInr` in `src/data/`, and add `sourceUrl` to grinder entries
 so the source threads get credited.
 
+## What's in it
+
+| Route | What it does |
+|---|---|
+| `/quiz` → `/you` | Taste profile, and the recommendations it drives |
+| `/explore` | Coffee 101 — interactive diagrams, no prior knowledge assumed |
+| `/brew` | Brew timer and ratio calculator for six methods |
+| `/log` | Brew tracker: what you did, how it tasted, what to change |
+| `/grinders` | Grinder finder, ranked by budget and brew method |
+| `/beans` | Bean catalogue, reordered by taste profile |
+| `/guide` | The written beginner's guide |
+
 ## Roadmap
 
 - **Phase 1 — guide, grinders, beans** ✅ done
 - **Phase 2 — taste quiz and matching** ✅ done
-- **Phase 3 — cafe finder.** Community-submitted Delhi NCR cafes with the coffee-specific
-  detail Google Maps lacks: roaster, brew methods, whether they do real filter coffee. Needs
-  Supabase (Postgres, auth, RLS), a moderation queue, and MapLibre for the map view. Cafe
-  scoring plugs into the existing matcher.
-- **Phase 4 — community.** Reviews, comments on guide and grinder entries, flagging.
+- **Phase 2.5 — visual guide, brew timer, brew tracker** ✅ done
+- **Phase 3 — cafe finder.** Schema and RLS are written and ready in `supabase/` — see
+  [supabase/README.md](supabase/README.md) for how to apply them. Still to build: the cafe
+  browser, submission form, moderation queue, and MapLibre map. Cafe scoring plugs into the
+  existing matcher in `src/lib/matching.ts`.
+- **Phase 4 — community.** Reviews, comments on guide and grinder entries, flagging. Tables
+  and policies for these already exist in the migrations.
 
 The cold-start problem is the real risk in Phase 3: an empty cafe list attracts no
 contributors. Seed it with 30–50 verified cafes before opening submissions.

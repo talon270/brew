@@ -95,6 +95,31 @@ describe('routes', () => {
     expect(screen.getByText('Start brewing')).toBeTruthy()
   })
 
+  it('renders the visual guide with all its diagrams', () => {
+    renderAt('/explore')
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Coffee 101')
+
+    for (const label of [
+      /coffee cherry cross-section/i,
+      /roast level spectrum/i,
+      /coffee flavour wheel/i,
+    ]) {
+      expect(screen.getByRole('img', { name: label })).toBeTruthy()
+    }
+  })
+
+  it('renders the brew log empty state', () => {
+    renderAt('/log')
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Your brews')
+    expect(screen.getByText(/Nothing logged yet/i)).toBeTruthy()
+  })
+
+  it('opens the log form pre-filled when the timer links into it', () => {
+    renderAt('/log?method=espresso&dose=18&seconds=30')
+    // 18g espresso at 1:2 → 36ml in the cup.
+    expect(screen.getByText('36ml')).toBeTruthy()
+  })
+
   it('renders the beans page', () => {
     renderAt('/beans')
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Beans')
