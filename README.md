@@ -1,5 +1,7 @@
 # Brew
 
+**Live at [talon270.github.io/brew](https://talon270.github.io/brew/)**
+
 A specialty coffee app for Delhi NCR. A beginner's guide, a grinder finder, and bean
 recommendations — all driven by a short taste quiz, so the advice is personal rather than
 generic.
@@ -30,7 +32,17 @@ npm install
 npm run dev      # http://localhost:5173
 npm test         # matching logic + render smoke tests
 npm run build    # type-check and bundle to dist/
+npm run preview  # serve the production build (needed to test the service worker)
 ```
+
+## Deploying
+
+Pushing to `main` deploys. `.github/workflows/deploy.yml` runs the tests, builds with
+`BASE_PATH=/brew/` (Pages serves from a subpath, not the domain root), and publishes to
+GitHub Pages. A failing test blocks the deploy rather than shipping over it.
+
+To host elsewhere, set `BASE_PATH` accordingly, or `/` for a domain root. Routing uses
+`HashRouter`, so no server-side rewrite rules are needed anywhere.
 
 ## Layout
 
