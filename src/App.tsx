@@ -7,6 +7,7 @@ import BeansPage from './routes/Beans'
 import GuideIndex from './routes/GuideIndex'
 import GuideSection from './routes/GuideSection'
 import Brew from './routes/Brew'
+import { THEME_ICONS, THEME_LABELS, useTheme } from './lib/theme'
 
 const NAV = [
   { to: '/brew', label: 'Timer' },
@@ -17,6 +18,8 @@ const NAV = [
 ]
 
 export default function App() {
+  const { theme, cycle } = useTheme()
+
   return (
     <div className="shell">
       <nav className="nav">
@@ -33,6 +36,14 @@ export default function App() {
               {item.label}
             </NavLink>
           ))}
+          <button
+            className="theme-toggle"
+            onClick={cycle}
+            title={THEME_LABELS[theme]}
+            aria-label={`${THEME_LABELS[theme]}. Click to change.`}
+          >
+            {THEME_ICONS[theme]}
+          </button>
         </div>
       </nav>
 

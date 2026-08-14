@@ -35,19 +35,19 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg: #17110d;
-    --surface: #221a14;
-    --surface-alt: #2c211a;
-    --border: #3b2d23;
-    --text: #f3e9dd;
-    --text-muted: #b29c89;
+    --bg: #241b15;
+    --surface: #302419;
+    --surface-alt: #3b2d22;
+    --border: #4c3b2e;
+    --text: #f6ede2;
+    --text-muted: #bfae9c;
     --accent: #e0925e;
-    --accent-soft: #33241a;
+    --accent-soft: #43301f;
     --good: #7fb587;
     --warn: #d6a45c;
 
-    --hero-from: #2e2018;
-    --hero-to: #17110d;
+    --hero-from: #3d2d21;
+    --hero-to: #241b15;
 
     --mascot-mug: #e6d5c2;
     --mascot-rim: #c9b299;
@@ -55,25 +55,25 @@
     --mascot-crema: #c98f5c;
     --mascot-face: #2e1d11;
     --mascot-blush: #d97f57;
-    --mascot-steam: #6f5c4c;
+    --mascot-steam: #8a7461;
     --mascot-spark: #e8b366;
   }
 }
 
 :root[data-theme='dark'] {
-  --bg: #17110d;
-  --surface: #221a14;
-  --surface-alt: #2c211a;
-  --border: #3b2d23;
-  --text: #f3e9dd;
-  --text-muted: #b29c89;
+  --bg: #241b15;
+  --surface: #302419;
+  --surface-alt: #3b2d22;
+  --border: #4c3b2e;
+  --text: #f6ede2;
+  --text-muted: #bfae9c;
   --accent: #e0925e;
-  --accent-soft: #33241a;
+  --accent-soft: #43301f;
   --good: #7fb587;
   --warn: #d6a45c;
 
-  --hero-from: #2e2018;
-  --hero-to: #17110d;
+  --hero-from: #3d2d21;
+  --hero-to: #241b15;
 
   --mascot-mug: #e6d5c2;
   --mascot-rim: #c9b299;
@@ -81,7 +81,7 @@
   --mascot-crema: #c98f5c;
   --mascot-face: #2e1d11;
   --mascot-blush: #d97f57;
-  --mascot-steam: #6f5c4c;
+  --mascot-steam: #8a7461;
   --mascot-spark: #e8b366;
 }
 
@@ -734,4 +734,25 @@ select {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 0.5rem 0.7rem;
+}
+
+/* --------------------------------------------------------- theme toggle */
+
+.theme-toggle {
+  margin-left: auto;
+  flex: 0 0 auto;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1;
+  padding: 0.4rem 0.6rem;
+  font-family: inherit;
+}
+
+.theme-toggle:hover {
+  color: var(--text);
+  border-color: var(--accent);
 }

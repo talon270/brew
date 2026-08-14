@@ -10,6 +10,16 @@
       content="A beginner guide, grinder finder, and taste-matched coffee recommendations for Delhi NCR."
     />
     <title>Brew — specialty coffee in Delhi NCR</title>
+    <script>
+      // Apply the saved theme before first paint, otherwise a light-theme user
+      // gets a dark flash on every load while React boots.
+      try {
+        var t = localStorage.getItem('brew.theme.v1')
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t)
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

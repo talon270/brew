@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it, beforeEach } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import App from './App'
 import GuideSection from './routes/GuideSection'
@@ -23,6 +23,8 @@ function renderAt(path: string) {
 
 beforeEach(() => {
   clearProfile()
+  localStorage.removeItem('brew.theme.v1')
+  document.documentElement.removeAttribute('data-theme')
 })
 
 describe('guide content', () => {
@@ -101,6 +103,35 @@ describe('routes', () => {
   it('prompts for the quiz on /you when no profile is saved', () => {
     renderAt('/you')
     expect(screen.getByRole('heading', { level: 1 }).textContent).toMatch(/haven't taken/i)
+  })
+})
+
+describe('theme', () => {
+  it('cycles system → light → dark and back, driving the root attribute', () => {
+    renderAt('/')
+    const toggle = screen.getByRole('button', { name: /theme/i })
+
+    // Starts on system: no attribute at all, so the media query decides.
+    expect(document.documentElement.hasAttribute('data-theme')).toBe(false)
+
+    fireEvent.click(toggle)
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light')
+
+    fireEvent.click(toggle)
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
+
+    fireEvent.click(toggle)
+    expect(document.documentElement.hasAttribute('data-theme')).toBe(false)
+  })
+
+  it('remembers the choice across a reload', () => {
+    const first = renderAt('/')
+    fireEvent.click(screen.getByRole('button', { name: /theme/i }))
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light')
+    first.unmount()
+
+    renderAt('/')
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light')
   })
 })
 
