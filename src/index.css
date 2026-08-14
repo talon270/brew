@@ -971,6 +971,7 @@ body::after {
 .hero::before {
   content: '';
   position: absolute;
+  z-index: 0;
   right: -6%;
   top: -30%;
   width: min(340px, 55%);
@@ -983,6 +984,7 @@ body::after {
 
 .hero > * {
   position: relative;
+  z-index: 1;
 }
 
 .hero .lede {
@@ -1146,6 +1148,7 @@ body::after {
   content: '';
   position: absolute;
   inset: 0;
+  z-index: 0;
   pointer-events: none;
   opacity: 0.045;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Cg fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'%3E%3Cg transform='translate(22 26) rotate(-28)'%3E%3Cellipse rx='9' ry='14'/%3E%3Cpath d='M0 -13c-5 6.5 5 20 0 26'/%3E%3C/g%3E%3Cg transform='translate(104 58) rotate(18)'%3E%3Cellipse rx='8' ry='12.5'/%3E%3Cpath d='M0 -11.5c-4.5 6 4.5 18 0 23'/%3E%3C/g%3E%3Cg transform='translate(56 104) rotate(52)'%3E%3Cellipse rx='8.5' ry='13'/%3E%3Cpath d='M0 -12c-4.5 6 4.5 18.5 0 24'/%3E%3C/g%3E%3Cg transform='translate(128 126) rotate(-12)'%3E%3Cellipse rx='7.5' ry='11.5'/%3E%3Cpath d='M0 -10.5c-4 5.5 4 17 0 21'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");

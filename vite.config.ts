@@ -38,6 +38,13 @@ export default defineConfig({
         // The guide is bundled JS, so precaching the build makes the whole
         // reading experience work offline.
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        // Take control as soon as a new build activates instead of waiting
+        // for every tab to close. Paired with the controllerchange reload in
+        // src/lib/sw-update.ts, this is what stops the app serving a stale
+        // build after a deploy.
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
       },
     }),
   ],
