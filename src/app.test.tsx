@@ -85,6 +85,14 @@ describe('routes', () => {
     expect(screen.getByText('Worth stretching for')).toBeTruthy()
   })
 
+  it('renders the brew timer with water calculated from the dose', () => {
+    renderAt('/brew')
+    // Pourover default: 15g at 1:16.7 → 250ml.
+    expect(screen.getByText('15g')).toBeTruthy()
+    expect(screen.getByText('250ml')).toBeTruthy()
+    expect(screen.getByText('Start brewing')).toBeTruthy()
+  })
+
   it('renders the beans page', () => {
     renderAt('/beans')
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Beans')

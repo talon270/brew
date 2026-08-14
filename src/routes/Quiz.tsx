@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Mascot from '../components/Mascot'
 import { BUDGET_OPTIONS, METHOD_QUESTION, QUIZ, buildProfile } from '../lib/quiz'
 import { useProfile } from '../lib/profile'
 import type { BrewMethod } from '../lib/types'
@@ -40,9 +41,12 @@ export default function Quiz() {
         <div style={{ width: `${(step / total) * 100}%` }} />
       </div>
 
-      <p className="meta">
-        Question {Math.min(step + 1, total)} of {total}
-      </p>
+      <div className="row-between">
+        <p className="meta" style={{ margin: 0 }}>
+          Question {Math.min(step + 1, total)} of {total}
+        </p>
+        <Mascot mood="thinking" size={56} steam={false} />
+      </div>
 
       {!isMethodStep && !isBudgetStep && (
         <div className="stack">

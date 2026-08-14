@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import Mascot from '../components/Mascot'
 import { useProfile } from '../lib/profile'
 import { describeProfile } from '../lib/quiz'
 import { rankBeans, rankGrinders } from '../lib/matching'
@@ -15,15 +16,18 @@ export default function You() {
   if (!profile) {
     return (
       <div className="stack">
-        <h1>You haven't taken the quiz yet</h1>
-        <p className="lede">
-          It's eight questions and takes about a minute. Everything else in the app gets more
-          useful once it knows how you drink coffee.
-        </p>
-        <div>
-          <Link to="/quiz" className="btn">
-            Find your taste
-          </Link>
+        <div className="hero">
+          <div className="hero-text">
+            <h1>You haven't taken the quiz yet</h1>
+            <p className="lede">
+              It's eight questions and takes about a minute. Everything else in the app gets
+              more useful once it knows how you drink coffee.
+            </p>
+            <Link to="/quiz" className="btn" style={{ marginTop: '0.6rem' }}>
+              Find your taste
+            </Link>
+          </div>
+          <Mascot mood="sleepy" size={110} steam={false} />
         </div>
       </div>
     )
@@ -34,16 +38,19 @@ export default function You() {
 
   return (
     <div className="stack">
-      <div>
-        <h1>Your taste</h1>
-        <p className="lede">You like {describeProfile(profile)}.</p>
-        {profile.methods.length > 0 && (
-          <p className="meta">
-            Brewing at home with{' '}
-            {profile.methods.map((m) => BREW_METHOD_LABELS[m].toLowerCase()).join(', ')} ·
-            grinder budget ₹{profile.budgetInr.toLocaleString('en-IN')}
-          </p>
-        )}
+      <div className="hero">
+        <div className="hero-text">
+          <h1>Your taste</h1>
+          <p className="lede">You like {describeProfile(profile)}.</p>
+          {profile.methods.length > 0 && (
+            <p className="meta">
+              Brewing at home with{' '}
+              {profile.methods.map((m) => BREW_METHOD_LABELS[m].toLowerCase()).join(', ')} ·
+              grinder budget ₹{profile.budgetInr.toLocaleString('en-IN')}
+            </p>
+          )}
+        </div>
+        <Mascot mood="delighted" size={104} />
       </div>
 
       <section>

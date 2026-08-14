@@ -6,8 +6,10 @@ import GrindersPage from './routes/Grinders'
 import BeansPage from './routes/Beans'
 import GuideIndex from './routes/GuideIndex'
 import GuideSection from './routes/GuideSection'
+import Brew from './routes/Brew'
 
 const NAV = [
+  { to: '/brew', label: 'Timer' },
   { to: '/guide', label: 'Guide' },
   { to: '/grinders', label: 'Grinders' },
   { to: '/beans', label: 'Beans' },
@@ -38,6 +40,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/quiz" element={<Quiz />} />
+          <Route path="/brew" element={<Brew />} />
           <Route path="/you" element={<You />} />
           <Route path="/grinders" element={<GrindersPage />} />
           <Route path="/beans" element={<BeansPage />} />

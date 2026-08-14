@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import Mascot from '../components/Mascot'
 import { GRINDERS } from '../data/grinders'
 import { rankGrinders } from '../lib/matching'
 import { GrinderCard } from '../components/Cards'
@@ -48,13 +49,16 @@ export default function GrindersPage() {
 
   return (
     <div className="stack">
-      <div>
-        <h1>Which grinder should you buy?</h1>
-        <p className="lede">
-          There is no single best grinder at a given price — it depends entirely on how you
-          brew. Espresso needs a far finer, more precise grind than French press, so set both
-          below.
-        </p>
+      <div className="hero">
+        <div className="hero-text">
+          <h1>Which grinder should you buy?</h1>
+          <p className="lede">
+            There is no single best grinder at a given price — it depends entirely on how you
+            brew. Espresso needs a far finer, more precise grind than French press, so set
+            both below.
+          </p>
+        </div>
+        <Mascot mood="grinding" size={104} />
       </div>
 
       <div className="card stack">

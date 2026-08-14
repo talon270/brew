@@ -1,15 +1,19 @@
 import { Link } from 'react-router-dom'
+import Mascot from '../components/Mascot'
 import { GUIDE_SECTIONS } from '../lib/guide'
 
 export default function GuideIndex() {
   return (
     <div className="stack">
-      <div>
-        <h1>A beginner's guide to specialty coffee</h1>
-        <p className="lede">
-          Everything you need to go from instant coffee to brewing something you're proud of.
-          Read it in order, or jump to whatever's breaking.
-        </p>
+      <div className="hero">
+        <div className="hero-text">
+          <h1>A beginner's guide to specialty coffee</h1>
+          <p className="lede">
+            Everything you need to go from instant coffee to brewing something you're proud
+            of. Read it in order, or jump to whatever's breaking.
+          </p>
+        </div>
+        <Mascot mood="reading" size={104} />
       </div>
 
       <div className="grid">

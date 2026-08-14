@@ -1,15 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#2b1d13"/>
-  <!-- cup -->
-  <path d="M128 196h208v104c0 57-47 104-104 104s-104-47-104-104V196z" fill="#a2542a"/>
-  <!-- handle -->
-  <path d="M336 224h26c30 0 54 24 54 54s-24 54-54 54h-26" fill="none" stroke="#a2542a" stroke-width="26" stroke-linecap="round"/>
-  <!-- saucer -->
-  <rect x="104" y="420" width="256" height="24" rx="12" fill="#e0925e"/>
-  <!-- steam -->
-  <g stroke="#f3e9dd" stroke-width="18" stroke-linecap="round" fill="none" opacity="0.85">
-    <path d="M186 148c-16-18 16-34 0-52"/>
-    <path d="M256 140c-16-18 16-38 0-56"/>
-    <path d="M326 148c-16-18 16-34 0-52"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <rect width="120" height="120" rx="26" fill="#2b1d13"/>
+  <g transform="translate(0,4)">
+    <!-- handle -->
+    <path d="M89 58c15 0 17 26 0 27" stroke="#f0e2d2" stroke-width="9" stroke-linecap="round" fill="none"/>
+    <!-- body -->
+    <path d="M30 46h60l-4 50c-.6 7-4 10-11 10H45c-7 0-10.4-3-11-10z" fill="#f0e2d2"/>
+    <!-- rim + coffee -->
+    <ellipse cx="60" cy="46" rx="30" ry="8.5" fill="#e0cdb6"/>
+    <ellipse cx="60" cy="46.5" rx="24" ry="6" fill="#4a2c18"/>
+    <!-- face -->
+    <ellipse cx="41" cy="80" rx="6" ry="3.6" fill="#e08a63" opacity="0.55"/>
+    <ellipse cx="79" cy="80" rx="6" ry="3.6" fill="#e08a63" opacity="0.55"/>
+    <ellipse cx="48.5" cy="71" rx="4.2" ry="4.6" fill="#3b2718"/>
+    <ellipse cx="71.5" cy="71" rx="4.2" ry="4.6" fill="#3b2718"/>
+    <circle cx="50" cy="69.5" r="1.5" fill="#f0e2d2"/>
+    <circle cx="73" cy="69.5" r="1.5" fill="#f0e2d2"/>
+    <path d="M51 84c3 6 15 6 18 0" stroke="#3b2718" stroke-width="3" stroke-linecap="round" fill="none"/>
   </g>
 </svg>
