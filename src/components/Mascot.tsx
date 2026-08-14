@@ -184,7 +184,7 @@ export default function Mascot({
 
 function Legs() {
   const HIP_Y = 116
-  const LEN = 15
+  const LEN = 18
 
   const leg = (hipX: number, cls: string) => (
     // transform-origin is the hip, so the CSS stride rotates the leg about it.
@@ -198,7 +198,14 @@ function Legs() {
         strokeWidth="10"
         strokeLinecap="round"
       />
-      <ellipse cx={hipX} cy={HIP_Y + LEN + 2} rx="9.5" ry="5.5" fill="var(--mascot-limb)" />
+      {/* The foot counter-rotates by exactly the leg's angle so it stays flat
+          on the ground instead of tipping over with the leg. */}
+      <g
+        className="foot"
+        style={{ transformBox: 'view-box', transformOrigin: `${hipX}px ${HIP_Y + LEN}px` }}
+      >
+        <ellipse cx={hipX} cy={HIP_Y + LEN + 2} rx="9.5" ry="5.5" fill="var(--mascot-limb)" />
+      </g>
     </g>
   )
 

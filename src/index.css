@@ -1295,37 +1295,60 @@ body::after {
 
 /* ==================================================== walk cycle ======= */
 
+/* One stride = two steps. Legs are half a cycle apart, the arm opposes the
+   near leg, and the whole character bobs once per footfall — twice a stride. */
+
 .mascot.is-walking .leg {
-  animation: bruno-step 0.62s ease-in-out infinite;
+  animation: bruno-step 0.42s ease-in-out infinite;
 }
 
-.mascot.is-walking .leg-r {
-  animation-delay: -0.31s;
+.mascot.is-walking .leg .foot {
+  animation: bruno-foot 0.42s ease-in-out infinite;
+}
+
+.mascot.is-walking .leg-r,
+.mascot.is-walking .leg-r .foot,
+.mascot.is-walking .mascot-arm {
+  animation-delay: -0.21s;
 }
 
 .mascot.is-walking .mascot-arm {
-  animation: bruno-swing 0.62s ease-in-out infinite;
-  animation-delay: -0.31s;
+  animation: bruno-swing 0.42s ease-in-out infinite;
 }
 
-/* The body bobs at twice the stride rate — once per footfall. */
-.mascot.is-walking .mascot-body {
-  animation: bruno-bob 0.31s ease-in-out infinite;
+/* Bobbing the whole rig rather than just the mug: bobbing the body alone
+   floated it off the hips, because the legs are anchored at a fixed height. */
+.mascot.is-walking .mascot-rig {
+  animation: bruno-bob 0.21s ease-in-out infinite;
 }
 
 @keyframes bruno-step {
-  0%, 100% { transform: rotate(20deg); }
-  50% { transform: rotate(-20deg); }
+  /* forward, heel down */
+  0% { transform: translateY(0) rotate(30deg); }
+  /* driving back through the stance */
+  50% { transform: translateY(0) rotate(-26deg); }
+  /* mid-swing: lifted and passing under the body */
+  72% { transform: translateY(-5px) rotate(-3deg); }
+  100% { transform: translateY(0) rotate(30deg); }
+}
+
+/* Exactly the inverse of bruno-step's rotation, which keeps the foot level. */
+@keyframes bruno-foot {
+  0% { transform: rotate(-30deg); }
+  50% { transform: rotate(26deg); }
+  72% { transform: rotate(3deg); }
+  100% { transform: rotate(-30deg); }
 }
 
 @keyframes bruno-swing {
-  0%, 100% { transform: rotate(-16deg); }
-  50% { transform: rotate(16deg); }
+  0% { transform: rotate(-22deg); }
+  50% { transform: rotate(20deg); }
+  100% { transform: rotate(-22deg); }
 }
 
 @keyframes bruno-bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
+  0%, 100% { transform: translateY(0.7px); }
+  50% { transform: translateY(-1.7px); }
 }
 
 /* A walking Bruno sits in the page flow, not over the cursor. */
@@ -1335,8 +1358,9 @@ body::after {
 
 @media (prefers-reduced-motion: reduce) {
   .mascot.is-walking .leg,
+  .mascot.is-walking .leg .foot,
   .mascot.is-walking .mascot-arm,
-  .mascot.is-walking .mascot-body {
+  .mascot.is-walking .mascot-rig {
     animation: none;
   }
 }

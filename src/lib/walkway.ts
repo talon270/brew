@@ -67,11 +67,12 @@ export function freeSpansAt(
   bandHalfHeight: number,
   minX: number,
   maxX: number,
-  pad = 8,
+  padX = 8,
+  padY = 3,
 ): Span[] {
   const blocking = obstacles
-    .filter((o) => o.bottom + pad > y - bandHalfHeight && o.top - pad < y + bandHalfHeight)
-    .map((o) => ({ left: o.left - pad, right: o.right + pad }))
+    .filter((o) => o.bottom + padY > y - bandHalfHeight && o.top - padY < y + bandHalfHeight)
+    .map((o) => ({ left: o.left - padX, right: o.right + padX }))
 
   const occupied = mergeSpans(blocking)
   const free: Span[] = []
@@ -101,8 +102,14 @@ export function targetXAt(
   halfWidth: number,
   minX: number,
   maxX: number,
+  /**
+   * Half-height of the slice tested for collisions. Defaults to his half-width
+   * but callers pass something smaller: checking his whole body height means
+   * the gaps between sections never read as passable.
+   */
+  bandHalfHeight = halfWidth,
 ): number | null {
-  const spans = freeSpansAt(obstacles, y, halfWidth, minX, maxX)
+  const spans = freeSpansAt(obstacles, y, bandHalfHeight, minX, maxX)
   const usable = spans.filter((s) => s.right - s.left >= halfWidth * 2)
 
   if (usable.length === 0) return null

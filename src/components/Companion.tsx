@@ -27,12 +27,24 @@ import { collectObstacles, targetXAt, type Obstacle } from '../lib/walkway'
 const WIDTH = 46
 const HEIGHT = WIDTH * MASCOT_ASPECT
 
-/** Walking pace in px/s. Brisk enough not to feel stuck, slow enough to read. */
-const SPEED = 100
+/**
+ * Walking pace in px/s. Tuned against the stride: his feet only travel about
+ * 6px per step, so covering much more ground than that per step makes them
+ * visibly skate. This does not remove the mismatch — little legs on a mug
+ * cannot — but it keeps it in cartoon territory.
+ */
+const SPEED = 72
 /** Close enough to count as arrived. */
 const ARRIVE = 10
 /** He must be dragged this far off before setting out again — stops jitter. */
 const RESTART = 34
+/**
+ * Half-height of the slice used for collisions — roughly his feet and legs
+ * rather than his whole body, so the gaps between sections are passable.
+ */
+const BAND = 13
+/** Give up after this long pressed against something, and just stand there. */
+const STUCK_MS = 420
 /** After this long without pointer movement, he heads for your reading position. */
 const POINTER_IDLE_MS = 8000
 
@@ -59,6 +71,9 @@ export default function Companion() {
   const obstacles = useRef<Obstacle[]>([])
   const facingRef = useRef<'left' | 'right'>('right')
   const movingRef = useRef(false)
+  const stuckMs = useRef(0)
+  /** The destination he abandoned, so he does not immediately retry it. */
+  const gaveUp = useRef<{ x: number; y: number } | null>(null)
   /**
    * Pointer in viewport coordinates, so scrolling moves the destination.
    * `at` starts at -Infinity, not 0: a zero timestamp reads as a *fresh*
@@ -101,10 +116,19 @@ export default function Companion() {
     }
     window.addEventListener('mousemove', onMove, { passive: true })
 
-    // Start off to one side, near the top of what you are looking at.
+    // Start off to one side, near the top of what you are looking at, and place
+    // him legally straight away — the per-frame containment only eases him out
+    // gradually, so starting inside a card would look like a slow escape.
+    const startY = window.scrollY + window.innerHeight * 0.2
+    const startX = Math.max(EDGE_MARGIN + WIDTH, window.innerWidth * 0.1)
+    const lo = EDGE_MARGIN + WIDTH / 2
+    const hi = Math.max(
+      lo,
+      (document.documentElement.clientWidth || window.innerWidth) - EDGE_MARGIN - WIDTH / 2,
+    )
     pos.current = {
-      x: Math.max(EDGE_MARGIN + WIDTH, window.innerWidth * 0.1),
-      y: window.scrollY + window.innerHeight * 0.2,
+      x: targetXAt(obstacles.current, startY + HEIGHT / 2, startX, WIDTH / 2, lo, hi, BAND) ?? startX,
+      y: startY,
     }
     setVisible(true)
 
@@ -135,15 +159,16 @@ export default function Companion() {
 
       const destY = clamp(clientY + window.scrollY - HEIGHT / 2, 0, Math.max(0, docH - HEIGHT))
 
-      // The closest spot to you he can actually stand, at his current height.
-      // Obstacles are in document space, so the pointer has to be too.
+      // The closest spot to you he can stand, measured at the height he is
+      // heading for. Obstacles are in document space, so the pointer must be too.
       const legalX = targetXAt(
         obstacles.current,
-        pos.current.y + HEIGHT / 2,
+        destY + HEIGHT / 2,
         clientX + window.scrollX,
         WIDTH / 2,
         minX,
         maxX,
+        BAND,
       )
       const destX = clamp(legalX ?? pos.current.x, minX, maxX)
 
@@ -152,15 +177,65 @@ export default function Companion() {
       const dy = destY - pos.current.y
       const dist = Math.hypot(dx, dy)
 
-      if (movingRef.current ? dist <= ARRIVE : dist > RESTART) {
-        movingRef.current = dist > RESTART
-        setMoving(movingRef.current)
+      if (movingRef.current) {
+        if (dist <= ARRIVE) {
+          movingRef.current = false
+          gaveUp.current = null
+          setMoving(false)
+        }
+      } else {
+        const abandoned = gaveUp.current
+        const somewhereNew =
+          !abandoned || Math.hypot(destX - abandoned.x, destY - abandoned.y) > RESTART
+        if (dist > RESTART && somewhereNew) {
+          movingRef.current = true
+          gaveUp.current = null
+          setMoving(true)
+        }
       }
+
+      const wasX = pos.current.x
+      const wasY = pos.current.y
 
       if (movingRef.current && dist > 0.01) {
         const step = Math.min(SPEED * dt, dist)
         pos.current.x += (dx / dist) * step
         pos.current.y += (dy / dist) * step
+      }
+
+      // Containment. Aiming at a clear destination says nothing about the path
+      // taken to reach it — a diagonal walk cuts straight through the cards in
+      // between. Re-clamping into a free span every frame is what actually
+      // keeps him out of the content: he slides along edges instead of
+      // crossing them, and only changes lane where a genuine gap opens up.
+      const safeX = targetXAt(
+        obstacles.current,
+        pos.current.y + HEIGHT / 2,
+        pos.current.x,
+        WIDTH / 2,
+        minX,
+        maxX,
+        BAND,
+      )
+      if (safeX !== null && safeX !== pos.current.x) {
+        // Ease large corrections rather than teleport when the layout shifts
+        // under him; small ones land immediately.
+        const limit = Math.max(4, SPEED * dt * 3)
+        const push = clamp(safeX - pos.current.x, -limit, limit)
+        pos.current.x = clamp(pos.current.x + push, minX, maxX)
+      }
+
+      // Pressed against something with nowhere to go: stop rather than mime
+      // walking on the spot forever.
+      if (movingRef.current) {
+        const travelled = Math.hypot(pos.current.x - wasX, pos.current.y - wasY)
+        stuckMs.current = travelled < 0.12 ? stuckMs.current + dt * 1000 : 0
+        if (stuckMs.current > STUCK_MS) {
+          stuckMs.current = 0
+          movingRef.current = false
+          gaveUp.current = { x: destX, y: destY }
+          setMoving(false)
+        }
       }
 
       // Face the way he is going, or toward you once he has stopped.
