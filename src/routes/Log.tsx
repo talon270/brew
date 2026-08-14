@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import Mascot from '../components/Mascot'
 import { BEANS } from '../data/beans'
 import { RECIPES, formatClock } from '../data/recipes'
@@ -100,11 +100,15 @@ export default function Log() {
       )}
 
       {!open ? (
-        <div>
-          <button className="btn" onClick={() => setOpen(true)}>
-            Log a brew
-          </button>
-        </div>
+        // With no entries the empty state below carries the call to action,
+        // so this button would just be the same thing twice.
+        entries.length > 0 && (
+          <div>
+            <button className="btn" onClick={() => setOpen(true)}>
+              Log a brew
+            </button>
+          </div>
+        )
       ) : (
         <div className="card stack">
           <strong>Log a brew</strong>
@@ -235,10 +239,24 @@ export default function Log() {
       )}
 
       {entries.length === 0 ? (
-        <p className="meta">
-          Nothing logged yet. Brew something, then come back — or use the timer and log
-          straight from it.
-        </p>
+        !open && (
+          <div className="card empty-state">
+            <Mascot mood="sleepy" size={140} steam={false} />
+            <h2>No brews yet</h2>
+            <p>
+              Log what you did and how it tasted, and the next dial-in stops being
+              guesswork. Two brews is enough to start seeing the pattern.
+            </p>
+            <div className="empty-actions">
+              <button className="btn" onClick={() => setOpen(true)}>
+                Log one now
+              </button>
+              <Link to="/brew" className="btn secondary">
+                Use the timer
+              </Link>
+            </div>
+          </div>
+        )
       ) : (
         <section>
           <div className="section-head">

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Mascot from '../components/Mascot'
+import Icon from '../components/Icons'
 import { useProfile } from '../lib/profile'
 import { describeProfile } from '../lib/quiz'
 import { GUIDE_SECTIONS } from '../lib/guide'
@@ -76,21 +77,27 @@ export default function Home() {
         </div>
         <div className="tiles">
           <Link to="/brew" className="tile">
-            <span className="tile-icon" aria-hidden="true">⏱️</span>
+            <span className="tile-icon">
+              <Icon name="timer" />
+            </span>
             <strong>Brew timer</strong>
             <span className="meta">
               Timed steps and water amounts for six methods, worked out from your dose.
             </span>
           </Link>
           <Link to="/grinders" className="tile">
-            <span className="tile-icon" aria-hidden="true">⚙️</span>
+            <span className="tile-icon">
+              <Icon name="grinder" />
+            </span>
             <strong>Grinder finder</strong>
             <span className="meta">
               {GRINDERS.length} grinders ranked by budget and how you actually brew.
             </span>
           </Link>
           <Link to="/beans" className="tile">
-            <span className="tile-icon" aria-hidden="true">🫘</span>
+            <span className="tile-icon">
+              <Icon name="bean" />
+            </span>
             <strong>Beans</strong>
             <span className="meta">
               {BEANS.length} bags from Delhi NCR roasters, matched to your taste.
@@ -99,17 +106,22 @@ export default function Home() {
         </div>
       </section>
 
+      <blockquote className="pullquote">
+        The grinder matters more than the coffee machine, and it isn't close.
+        <cite>Chapter 2</cite>
+      </blockquote>
+
       <section>
         <div className="section-head">
           <h2>The guide</h2>
           <div className="rule" />
           <span className="meta">{GUIDE_SECTIONS.length} chapters</span>
         </div>
-        <div className="grid">
+        <div className="grid chapter-grid">
           {GUIDE_SECTIONS.map((s) => (
             <Link key={s.slug} to={`/guide/${s.slug}`} className="card chapter">
-              <span className="chapter-icon" aria-hidden="true">
-                {s.icon}
+              <span className="chapter-icon">
+                <Icon name={s.icon} size={22} />
               </span>
               <span className="chapter-body">
                 <strong>{s.title}</strong>

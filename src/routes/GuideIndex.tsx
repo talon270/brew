@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Mascot from '../components/Mascot'
+import Icon from '../components/Icons'
 import { GUIDE_SECTIONS } from '../lib/guide'
 
 export default function GuideIndex() {
@@ -16,11 +17,11 @@ export default function GuideIndex() {
         <Mascot mood="reading" size={104} />
       </div>
 
-      <div className="grid">
+      <div className="grid chapter-grid">
         {GUIDE_SECTIONS.map((s) => (
           <Link key={s.slug} to={`/guide/${s.slug}`} className="card chapter">
-            <span className="chapter-icon" aria-hidden="true">
-              {s.icon}
+            <span className="chapter-icon">
+              <Icon name={s.icon} size={22} />
             </span>
             <span className="chapter-body">
               <strong>{s.title}</strong>

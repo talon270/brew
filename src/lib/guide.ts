@@ -10,6 +10,7 @@
  */
 
 import { marked } from 'marked'
+import type { IconName } from '../components/Icons'
 
 const files = import.meta.glob('../../content/guide/*.md', {
   query: '?raw',
@@ -27,16 +28,16 @@ export interface GuideSection {
   excerpt: string
   readingMinutes: number
   /** Decorative, per chapter. */
-  icon: string
+  icon: IconName
 }
 
-const ICONS: Record<string, string> = {
-  'what-is-specialty-coffee': '🌱',
-  'grinder-first': '⚙️',
-  'buying-and-storing': '🛍️',
-  'the-variables': '⚖️',
-  'brew-methods': '🫖',
-  troubleshooting: '🔧',
+const ICONS: Record<string, IconName> = {
+  'what-is-specialty-coffee': 'seedling',
+  'grinder-first': 'grinder',
+  'buying-and-storing': 'bag',
+  'the-variables': 'scale',
+  'brew-methods': 'kettle',
+  troubleshooting: 'wrench',
 }
 
 /** ~200 words per minute, rounded up, floored at 1. */
@@ -98,7 +99,7 @@ function parse(path: string, raw: string): GuideSection {
     html: marked.parse(body, { async: false }) as string,
     excerpt: firstSentence(body),
     readingMinutes: readingMinutes(body),
-    icon: ICONS[slug] ?? '☕',
+    icon: ICONS[slug] ?? 'cup',
   }
 }
 

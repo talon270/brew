@@ -108,10 +108,15 @@ describe('routes', () => {
     }
   })
 
-  it('renders the brew log empty state', () => {
+  it('renders the brew log empty state with a single call to action', () => {
     renderAt('/log')
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Your brews')
-    expect(screen.getByText(/Nothing logged yet/i)).toBeTruthy()
+    expect(screen.getByText('No brews yet')).toBeTruthy()
+
+    // The empty state carries the CTA, so the standalone button must not also
+    // be rendered — that was the same action offered twice.
+    expect(screen.getByRole('button', { name: 'Log one now' })).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'Log a brew' })).toBeNull()
   })
 
   it('opens the log form pre-filled when the timer links into it', () => {

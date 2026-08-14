@@ -61,6 +61,7 @@ export default function Brew() {
     -1,
   )
   const overrun = running && elapsed > recipe.totalSeconds
+  const currentStep = currentIndex >= 0 ? steps[currentIndex] : undefined
 
   return (
     <div className="stack">
@@ -68,11 +69,15 @@ export default function Brew() {
         <div className="hero-text">
           <h1>Brew it</h1>
           <p className="lede">
-            Pick a method, set your dose, and follow the clock. The water amounts are
-            calculated for you, so there is no arithmetic to do with a kettle in your hand.
+            {overrun
+              ? "Past the target time. Pull it now — and grind coarser next time if this keeps happening."
+              : running
+                ? currentStep?.title ?? 'Brewing.'
+                : 'Pick a method, set your dose, and follow the clock. The water amounts are calculated for you, so there is no arithmetic to do with a kettle in your hand.'}
           </p>
         </div>
-        <Mascot mood={running ? 'grinding' : 'happy'} size={104} />
+        {/* Bruno reacts to the brew rather than just sitting there. */}
+        <Mascot mood={overrun ? 'worried' : running ? 'grinding' : 'happy'} size={116} />
       </div>
 
       <div className="card stack">

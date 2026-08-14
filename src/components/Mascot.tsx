@@ -18,6 +18,7 @@ export type Mood =
   | 'reading' // guide
   | 'delighted' // results
   | 'sleepy' // empty states
+  | 'worried' // something is going wrong, e.g. a brew running long
 
 interface MascotProps {
   mood?: Mood
@@ -138,6 +139,19 @@ export default function Mascot({
           </g>
         )}
 
+        {/* Both inner brows tilted up — the universal worried face. */}
+        {mood === 'worried' && (
+          <g
+            stroke="var(--mascot-face)"
+            strokeWidth="3"
+            strokeLinecap="round"
+            fill="none"
+          >
+            <path d="M45 67.5q7 -3.5 13 0.5" />
+            <path d="M95 67.5q-7 -3.5 -13 0.5" />
+          </g>
+        )}
+
         {/* One raised brow, over the left eye only. Kept clear of the rim,
             which it used to overlap and read as a crack in the mug. */}
         {mood === 'thinking' && (
@@ -197,6 +211,8 @@ function Mouth({ mood }: { mood: Mood }) {
       return <path d="M66 95q4 3 8 0" {...common} />
     case 'grinding':
       return <path d="M63 94h14" {...common} />
+    case 'worried':
+      return <path d="M63 96q3.5 -4 7 0t7 0" {...common} />
     default:
       return <path d="M63 93q7 6 14 0" {...common} />
   }

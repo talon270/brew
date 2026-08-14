@@ -2,22 +2,22 @@
    Light palette defined on bare :root; dark redefines tokens only. */
 
 :root {
-  --bg: #faf6f0;
-  --surface: #ffffff;
-  --surface-alt: #f3ece2;
-  --border: #e2d6c5;
+  --bg: #f4ebdd;
+  --surface: #fdf8f1;
+  --surface-alt: #ece0cd;
+  --border: #ddcdb4;
   --text: #2b1d13;
   --text-muted: #6f5c4c;
   --accent: #a2542a;
-  --accent-soft: #f6e6da;
+  --accent-soft: #f7e3d0;
   --good: #3f6b46;
   --warn: #8a5a12;
   --radius: 12px;
   --radius-sm: 8px;
   --maxw: 860px;
 
-  --hero-from: #f7e7d8;
-  --hero-to: #faf6f0;
+  --hero-from: #f2ddc4;
+  --hero-to: #f6eee2;
 
   --mascot-mug: #f0e2d2;
   --mascot-rim: #e0cdb6;
@@ -29,7 +29,7 @@
   --mascot-spark: #e0a24e;
   --mascot-mug-light: #fffaf3;
   --mascot-shade: #c9b096;
-  --cup-empty: #ece5dc;
+  --cup-empty: #e3ddd2;
 
   --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua',
     Georgia, 'Times New Roman', serif;
@@ -124,8 +124,9 @@ h3 {
 }
 
 h1 {
-  font-size: clamp(1.9rem, 5vw, 2.7rem);
+  font-size: clamp(1.85rem, 4.4vw, 2.45rem);
   margin: 0 0 0.35em;
+  text-wrap: balance;
 }
 
 /* ---------------------------------------------------------------- layout */
@@ -1135,4 +1136,115 @@ body::after {
   .stack > * {
     animation: none;
   }
+}
+
+/* ============================================ decorative bean field ====
+   Scattered coffee beans behind the hero. A coffee site with no coffee
+   imagery is working with one hand tied. */
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Cg fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'%3E%3Cg transform='translate(22 26) rotate(-28)'%3E%3Cellipse rx='9' ry='14'/%3E%3Cpath d='M0 -13c-5 6.5 5 20 0 26'/%3E%3C/g%3E%3Cg transform='translate(104 58) rotate(18)'%3E%3Cellipse rx='8' ry='12.5'/%3E%3Cpath d='M0 -11.5c-4.5 6 4.5 18 0 23'/%3E%3C/g%3E%3Cg transform='translate(56 104) rotate(52)'%3E%3Cellipse rx='8.5' ry='13'/%3E%3Cpath d='M0 -12c-4.5 6 4.5 18.5 0 24'/%3E%3C/g%3E%3Cg transform='translate(128 126) rotate(-12)'%3E%3Cellipse rx='7.5' ry='11.5'/%3E%3Cpath d='M0 -10.5c-4 5.5 4 17 0 21'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 190px 190px;
+}
+
+:root[data-theme='dark'] .hero::after,
+:root:not([data-theme='light']) .hero::after {
+  opacity: 0.042;
+  filter: invert(1);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .hero::after {
+    filter: none;
+    opacity: 0.045;
+  }
+}
+
+/* ================================================ layout variety ======= */
+
+/* Chapters read fine as a list on a phone and waste half the screen on a
+   desktop, so they go two-up once there is room. */
+@media (min-width: 720px) {
+  .chapter-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem;
+  }
+}
+
+.pullquote {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 3.2vw, 1.7rem);
+  line-height: 1.35;
+  color: var(--text);
+  border-left: 4px solid var(--accent);
+  padding: 0.3rem 0 0.3rem 1.15rem;
+  margin: 2.4rem 0;
+  max-width: 30ch;
+}
+
+.pullquote cite {
+  display: block;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-style: normal;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 0.7rem;
+}
+
+/* Hero gets an asymmetric split on wide screens rather than a centred blob. */
+@media (min-width: 780px) {
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 0.4fr);
+    align-items: center;
+  }
+}
+
+/* ==================================================== icon chips ======= */
+
+.tile-icon,
+.chapter-icon {
+  color: var(--accent);
+}
+
+.tile-icon svg,
+.chapter-icon svg {
+  display: block;
+}
+
+/* ================================================== empty states ======= */
+
+.empty-state {
+  text-align: center;
+  padding: 2.4rem 1.2rem 2.8rem;
+}
+
+.empty-state .mascot {
+  margin: 0 auto 0.6rem;
+}
+
+.empty-state h2 {
+  font-size: 1.35rem;
+  margin: 0 0 0.4rem;
+}
+
+.empty-state p {
+  color: var(--text-muted);
+  max-width: 44ch;
+  margin: 0 auto 1.2rem;
+}
+
+.empty-actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
