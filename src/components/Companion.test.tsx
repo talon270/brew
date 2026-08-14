@@ -33,6 +33,19 @@ async function frames(n: number) {
   for (let i = 0; i < n; i++) await nextFrame()
 }
 
+/**
+ * Run until he stops walking. Waiting on the condition rather than guessing a
+ * frame count keeps this stable across machines — a fixed count passed locally
+ * and failed in CI purely on frame timing.
+ */
+async function settle(container: HTMLElement, cap = 240) {
+  for (let i = 0; i < cap; i++) {
+    if (!container.querySelector('.mascot.is-walking')) return true
+    await nextFrame()
+  }
+  return false
+}
+
 function pointAt(x: number, y: number) {
   return act(async () => {
     window.dispatchEvent(new MouseEvent('mousemove', { clientX: x, clientY: y }))
@@ -113,8 +126,10 @@ describe('walking companion', () => {
     const el = container.querySelector('.companion') as HTMLElement
 
     // A short stroll from where he starts, then let him settle.
-    await pointAt(240, 200)
-    await frames(90)
+    await pointAt(170, 190)
+    await frames(3)
+    expect(container.querySelector('.mascot.is-walking')).not.toBeNull()
+    expect(await settle(container)).toBe(true)
 
     const settled = posOf(el)
     await frames(20)
@@ -133,11 +148,12 @@ describe('walking companion', () => {
 
     const el = container.querySelector('.companion') as HTMLElement
 
-    await pointAt(240, 200)
-    await frames(90)
+    await pointAt(170, 190)
+    await frames(3)
+    expect(await settle(container)).toBe(true)
     const settled = posOf(el)
 
-    await pointAt(240, 640)
+    await pointAt(170, 640)
     await frames(10)
 
     expect(posOf(el).y).toBeGreaterThan(settled.y)
