@@ -20,11 +20,19 @@ export type Mood =
   | 'sleepy' // empty states
   | 'worried' // something is going wrong, e.g. a brew running long
 
+/** Normalised look direction, each axis -1..1. Used by the cursor companion. */
+export interface Look {
+  x: number
+  y: number
+}
+
 interface MascotProps {
   mood?: Mood
   size?: number
   steam?: boolean
   className?: string
+  /** Shifts the eyes toward a point, so Bruno can watch the cursor. */
+  look?: Look
 }
 
 export default function Mascot({
@@ -32,9 +40,15 @@ export default function Mascot({
   size = 140,
   steam = true,
   className,
+  look,
 }: MascotProps) {
   const uid = `m-${mood}`
   const closedEyes = mood === 'sleepy' || mood === 'grinding'
+
+  // A few SVG units is plenty — the eyes are small, and overshooting makes
+  // them slide off the face.
+  const lookX = look ? clamp(look.x, -1, 1) * 3 : 0
+  const lookY = look ? clamp(look.y, -1, 1) * 2.2 : 0
 
   return (
     <svg
@@ -51,10 +65,6 @@ export default function Mascot({
           <stop offset="0" stopColor="var(--mascot-mug-light)" />
           <stop offset="1" stopColor="var(--mascot-mug)" />
         </linearGradient>
-        <radialGradient id={`${uid}-cheek`}>
-          <stop offset="0" stopColor="var(--mascot-blush)" stopOpacity="0.75" />
-          <stop offset="1" stopColor="var(--mascot-blush)" stopOpacity="0" />
-        </radialGradient>
       </defs>
 
       {steam && (
@@ -101,10 +111,6 @@ export default function Mascot({
 
         {/* ---- face ---- */}
 
-        {/* blush sits under and slightly outside the eyes, overlapping them */}
-        <ellipse cx="40" cy="89" rx="11" ry="7" fill={`url(#${uid}-cheek)`} />
-        <ellipse cx="100" cy="89" rx="11" ry="7" fill={`url(#${uid}-cheek)`} />
-
         {closedEyes ? (
           <g
             stroke="var(--mascot-face)"
@@ -116,26 +122,26 @@ export default function Mascot({
             <path d="M79 78q8 -8 16 0" />
           </g>
         ) : (
-          <g className="mascot-eyes">
+          <g className="mascot-eyes" transform={`translate(${lookX} ${lookY})`}>
             <ellipse
               cx="53"
               cy={mood === 'reading' ? 80 : 78}
-              rx="9.5"
-              ry={mood === 'delighted' ? 10.5 : 10}
+              rx="7"
+              ry={mood === 'delighted' ? 8 : 7.5}
               fill="var(--mascot-face)"
             />
             <ellipse
               cx="87"
               cy={mood === 'reading' ? 80 : 78}
-              rx="9.5"
-              ry={mood === 'delighted' ? 10.5 : 10}
+              rx="7"
+              ry={mood === 'delighted' ? 8 : 7.5}
               fill="var(--mascot-face)"
             />
             {/* two catchlights per eye — the single biggest cuteness lever */}
-            <circle cx="49.5" cy={mood === 'reading' ? 76 : 74} r="3.4" fill="#fff" />
-            <circle cx="83.5" cy={mood === 'reading' ? 76 : 74} r="3.4" fill="#fff" />
-            <circle cx="56.5" cy={mood === 'reading' ? 83.5 : 81.5} r="1.7" fill="#fff" opacity="0.8" />
-            <circle cx="90.5" cy={mood === 'reading' ? 83.5 : 81.5} r="1.7" fill="#fff" opacity="0.8" />
+            <circle cx="49.5" cy={mood === 'reading' ? 76 : 74} r="2.5" fill="#fff" />
+            <circle cx="83.5" cy={mood === 'reading' ? 76 : 74} r="2.5" fill="#fff" />
+            <circle cx="56.5" cy={mood === 'reading' ? 83.5 : 81.5} r="1.2" fill="#fff" opacity="0.8" />
+            <circle cx="90.5" cy={mood === 'reading' ? 83.5 : 81.5} r="1.2" fill="#fff" opacity="0.8" />
           </g>
         )}
 
@@ -216,4 +222,8 @@ function Mouth({ mood }: { mood: Mood }) {
     default:
       return <path d="M63 93q7 6 14 0" {...common} />
   }
+}
+
+function clamp(n: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, n))
 }

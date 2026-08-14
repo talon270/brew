@@ -9,6 +9,7 @@ import GuideSection from './routes/GuideSection'
 import Brew from './routes/Brew'
 import Log from './routes/Log'
 import Explore from './routes/Explore'
+import Companion from './components/Companion'
 import { THEME_ICONS, THEME_LABELS, useTheme } from './lib/theme'
 
 const NAV = [
@@ -70,6 +71,9 @@ export default function App() {
       <footer>
         Brew — specialty coffee in Delhi NCR. Prices are approximate and change often.
       </footer>
+
+      {/* Outside <main> so he survives route changes and follows you around. */}
+      <Companion />
     </div>
   )
 }
