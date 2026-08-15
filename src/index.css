@@ -1,5 +1,5 @@
 /* Brew — design tokens and base styles.
-   Light palette defined on bare :root; dark redefines tokens only. */
+   Light mode only, by design — no dark palette, no toggle. */
 
 :root {
   --bg: #f4ebdd;
@@ -38,75 +38,9 @@
   --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua',
     Georgia, 'Times New Roman', serif;
 
-  color-scheme: light dark;
+  color-scheme: light;
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   line-height: 1.6;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --bg: #241b15;
-    --surface: #302419;
-    --surface-alt: #3b2d22;
-    --border: #4c3b2e;
-    --text: #f6ede2;
-    --text-muted: #bfae9c;
-    --accent: #e0925e;
-    --accent-soft: #43301f;
-    --good: #7fb587;
-    --warn: #d6a45c;
-
-    --hero-from: #3d2d21;
-    --hero-to: #241b15;
-
-    --mascot-mug: #e6d5c2;
-    --mascot-rim: #c9b299;
-    --mascot-coffee: #351f11;
-    --mascot-crema: #c98f5c;
-    --mascot-face: #2e1d11;
-    --mascot-blush: #d97f57;
-    --mascot-steam: #8a7461;
-    --mascot-spark: #e8b366;
-    --mascot-mug-light: #fbf1e4;
-    --mascot-shade: #b9a189;
-    --mascot-sleeve: #b8622e;
-    --mascot-sleeve-light: #d9854a;
-    --mascot-limb: #5d4029;
-    --mascot-line: #2e1b0f;
-    --cup-empty: #2b2b33;
-  }
-}
-
-:root[data-theme='dark'] {
-  --bg: #241b15;
-  --surface: #302419;
-  --surface-alt: #3b2d22;
-  --border: #4c3b2e;
-  --text: #f6ede2;
-  --text-muted: #bfae9c;
-  --accent: #e0925e;
-  --accent-soft: #43301f;
-  --good: #7fb587;
-  --warn: #d6a45c;
-
-  --hero-from: #3d2d21;
-  --hero-to: #241b15;
-
-  --mascot-mug: #e6d5c2;
-  --mascot-rim: #c9b299;
-  --mascot-coffee: #351f11;
-  --mascot-crema: #c98f5c;
-  --mascot-face: #2e1d11;
-  --mascot-blush: #d97f57;
-  --mascot-steam: #8a7461;
-  --mascot-spark: #e8b366;
-  --mascot-mug-light: #fbf1e4;
-  --mascot-shade: #b9a189;
-  --mascot-sleeve: #b8622e;
-  --mascot-sleeve-light: #d9854a;
-  --mascot-limb: #5d4029;
-  --mascot-line: #2e1b0f;
-  --cup-empty: #2b2b33;
 }
 
 * {
@@ -774,27 +708,6 @@ select {
   padding: 0.5rem 0.7rem;
 }
 
-/* --------------------------------------------------------- theme toggle */
-
-.theme-toggle {
-  margin-left: auto;
-  flex: 0 0 auto;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 0.95rem;
-  line-height: 1;
-  padding: 0.4rem 0.6rem;
-  font-family: inherit;
-}
-
-.theme-toggle:hover {
-  color: var(--text);
-  border-color: var(--accent);
-}
-
 /* ------------------------------------------------------------- visuals */
 
 .explore-section + .explore-section {
@@ -1167,19 +1080,6 @@ body::after {
   background-size: 190px 190px;
 }
 
-:root[data-theme='dark'] .hero::after,
-:root:not([data-theme='light']) .hero::after {
-  opacity: 0.042;
-  filter: invert(1);
-}
-
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme='dark']) .hero::after {
-    filter: none;
-    opacity: 0.045;
-  }
-}
-
 /* ================================================ layout variety ======= */
 
 /* Chapters read fine as a list on a phone and waste half the screen on a
@@ -1445,7 +1345,6 @@ input[type='date'] {
 
 @media print {
   .nav,
-  .theme-toggle,
   footer,
   .btn,
   .chip-row {

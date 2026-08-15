@@ -122,8 +122,8 @@ export default function RoastSpectrum() {
             >
               {/* generous invisible hit area */}
               <rect x={x - 48} y="0" width="96" height="96" fill="transparent" />
-              {/* The bar is always brown, in either theme, so a light ring
-                  keeps the dark-roast marker from disappearing into it. */}
+              {/* The bar is always brown, so a light ring keeps the
+                  dark-roast marker from disappearing into it. */}
               <circle
                 cx={x}
                 cy="25"

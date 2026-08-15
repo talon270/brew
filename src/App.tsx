@@ -19,7 +19,6 @@ import Glossary from './routes/Glossary'
 import Gear from './routes/Gear'
 import Roasters from './routes/Roasters'
 import Buy from './routes/Buy'
-import { THEME_ICONS, THEME_LABELS, useTheme } from './lib/theme'
 
 const NAV = [
   { to: '/path', label: 'Start here' },
@@ -33,8 +32,6 @@ const NAV = [
 ]
 
 export default function App() {
-  const { theme, cycle } = useTheme()
-
   return (
     <div className="shell">
       <nav className="nav">
@@ -51,14 +48,6 @@ export default function App() {
               {item.label}
             </NavLink>
           ))}
-          <button
-            className="theme-toggle"
-            onClick={cycle}
-            title={THEME_LABELS[theme]}
-            aria-label={`${THEME_LABELS[theme]}. Click to change.`}
-          >
-            {THEME_ICONS[theme]}
-          </button>
         </div>
       </nav>
 

@@ -7,8 +7,8 @@
  *
  * Proportions follow the baby-schema rules that make a shape read as a
  * character rather than an object — squat wide body, eyes low and wide apart,
- * tiny mouth, soft corners. A thin outline keeps him legible on both the cream
- * and the dark theme.
+ * tiny mouth, soft corners. A thin outline keeps him legible on the cream
+ * background.
  *
  * Inline SVG so he inherits the palette, scales without assets, and can change
  * expression and pose per page.
